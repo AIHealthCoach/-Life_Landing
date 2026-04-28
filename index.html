@@ -1,0 +1,2073 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>+Life — Personal Health & Wellbeing OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  /* surfaces */
+  --ink:#09090b;
+  --ink2:#0f0f12;
+  --ink3:#141418;
+  --paper:#f1ede6;
+  --paper2:#e8e3da;
+  /* accent */
+  --gr:#39ff6e;
+  --gr2:#27a855;
+  --gr-a:rgba(57,255,110,0.12);
+  --gr-b:rgba(57,255,110,0.06);
+  /* status */
+  --am:#f1c40f;
+  --rd:#e74c3c;
+  /* text on dark */
+  --tx:#ededea;
+  --tx2:#9a9691;
+  --tx3:#6a6560;
+  /* text on light */
+  --tx-lt:#1a1a1a;
+  --tx2-lt:#555;
+  --tx3-lt:#888;
+  /* fonts */
+  --fd:'Playfair Display', Georgia, serif;
+  --fs:'DM Sans', system-ui, sans-serif;
+  --fm:'DM Mono', 'Courier New', monospace;
+  /* easing */
+  --ease:cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--fs);
+  font-weight:400;
+  font-size:14px;
+  line-height:1.6;
+  color:var(--tx);
+  background:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+img,svg,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none;transition:color .25s var(--ease)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+em{font-style:italic}
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+.sec{padding:100px 52px;position:relative;overflow:hidden}
+.sec-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.s-dark{background:var(--ink);color:var(--tx)}
+.s-dark2{background:var(--ink2);color:var(--tx)}
+.s-light{background:var(--paper);color:var(--tx-lt)}
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+h1,h2,h3,h4,p{margin:0}
+.disp{font-family:var(--fd);font-weight:400;letter-spacing:-0.01em}
+.disp em{color:var(--gr);font-style:italic}
+.s-light .disp em{color:var(--gr2)}
+.h1{font-size:clamp(44px,5.5vw,76px);line-height:.95;letter-spacing:-0.02em}
+.h2{font-size:clamp(30px,4vw,52px);line-height:1.08}
+.h2-big{font-size:clamp(36px,5vw,68px);line-height:1.0}
+.h2-cta{font-size:clamp(44px,6.5vw,88px);line-height:.93;letter-spacing:-0.02em}
+.h3{font-size:28px;line-height:1.15}
+.h4{font-size:20px;line-height:1.2}
+.lead{font-size:15px;line-height:1.75;color:var(--tx2);max-width:520px}
+.s-light .lead{color:var(--tx2-lt)}
+.desc{font-size:14px;line-height:1.8;color:var(--tx2);max-width:500px}
+.s-light .desc{color:var(--tx2-lt)}
+.body-sm{font-size:13px;line-height:1.7;color:var(--tx2)}
+.s-light .body-sm{color:var(--tx2-lt)}
+.body-xs{font-size:12px;line-height:1.6;color:var(--tx2)}
+.s-light .body-xs{color:var(--tx2-lt)}
+
+/* ============================================================
+   KICKER (mono uppercase + trailing rule)
+   ============================================================ */
+.kicker{
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--fm);font-weight:400;
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx3);margin-bottom:24px;
+}
+.kicker::after{content:"";flex:1;height:1px;background:rgba(255,255,255,0.1);max-width:none}
+.s-light .kicker{color:var(--tx3-lt)}
+.s-light .kicker::after{background:rgba(0,0,0,0.15)}
+.kicker.short::after{flex:0 0 32px}
+
+.mono{font-family:var(--fm);font-weight:400;letter-spacing:.14em;text-transform:uppercase;font-size:9px;color:var(--tx3)}
+.s-light .mono{color:var(--tx3-lt)}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fm);font-weight:400;
+  font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  padding:14px 30px;border-radius:2px;
+  transition:transform .3s var(--ease), opacity .3s var(--ease), background .25s var(--ease), color .25s var(--ease);
+}
+.btn:hover{opacity:.88;transform:translateY(-2px)}
+.btn-pri{background:var(--gr);color:#000}
+.btn-pri-lt{background:var(--gr2);color:#fff}
+.btn-ghost{color:var(--tx2);border:1px solid rgba(255,255,255,0.14)}
+.btn-ghost:hover{color:var(--tx)}
+.s-light .btn-ghost{color:var(--tx2-lt);border-color:rgba(0,0,0,0.18)}
+.s-light .btn-ghost:hover{color:var(--tx-lt)}
+.btn-nav{padding:9px 22px;background:var(--gr);color:#000}
+
+/* ============================================================
+   TAGS / BADGES / PILLS
+   ============================================================ */
+.tag{
+  display:inline-block;
+  font-family:var(--fm);font-weight:400;
+  font-size:7px;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 7px;border-radius:2px;
+}
+.tag-gr{background:var(--gr-a);color:var(--gr);border:1px solid rgba(57,255,110,0.2)}
+.tag-lt{background:rgba(255,255,255,0.05);color:var(--tx2);border:1px solid rgba(255,255,255,0.08)}
+.s-light .tag-lt{background:rgba(0,0,0,0.04);color:var(--tx2-lt);border-color:rgba(0,0,0,0.08)}
+.badge{
+  display:inline-block;
+  font-family:var(--fm);font-weight:400;
+  font-size:7px;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 6px;border-radius:2px;
+}
+.badge-gr{background:rgba(57,255,110,0.14);color:var(--gr)}
+.badge-am{background:rgba(241,196,15,0.14);color:var(--am)}
+.badge-rd{background:rgba(231,76,60,0.14);color:var(--rd)}
+.pill{
+  display:inline-block;
+  font-family:var(--fm);font-weight:400;
+  font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 8px;border-radius:100px;
+}
+.pill-gr{background:var(--gr-a);color:var(--gr);border:1px solid rgba(57,255,110,0.25)}
+.pill-lt{background:rgba(255,255,255,0.05);color:var(--tx2);border:1px solid rgba(255,255,255,0.08)}
+.s-light .pill-lt{background:#fff;color:var(--tx2-lt);border-color:#ddd8ce}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card{
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:12px;
+  padding:24px;
+}
+.card-lt{
+  background:#fff;
+  border:1px solid #ddd8ce;
+  border-radius:10px;
+  padding:22px;
+}
+.card-paper{
+  background:var(--paper2);
+  border:1px solid #ddd8ce;
+  border-radius:12px;
+  padding:24px;
+}
+.card-gr{
+  background:linear-gradient(135deg,#0f1a12,#0a1209);
+  border:1px solid rgba(57,255,110,0.2);
+  border-radius:14px;
+  padding:28px;
+}
+.card-rd{
+  background:linear-gradient(135deg,#120808,#1a0808);
+  border:1px solid rgba(231,76,60,0.2);
+  border-radius:14px;
+  padding:28px;
+}
+
+/* ============================================================
+   LIVE DOT
+   ============================================================ */
+.live-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gr);box-shadow:0 0 6px rgba(57,255,110,0.7);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.sr{opacity:0;transform:translateY(36px);transition:opacity .95s var(--ease), transform .95s var(--ease)}
+.sr.up{transform:translateY(56px)}
+.sr.left{transform:translateX(-44px)}
+.sr.right{transform:translateX(44px)}
+.sr.vis{opacity:1;transform:none}
+.sr.d1{transition-delay:.08s}
+.sr.d2{transition-delay:.18s}
+.sr.d3{transition-delay:.28s}
+.sr.d4{transition-delay:.38s}
+.sr.d5{transition-delay:.48s}
+
+/* ============================================================
+   GRID HELPERS
+   ============================================================ */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;border:1px solid rgba(255,255,255,0.18)}
+.row{display:flex;align-items:center;gap:12px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.stack-lg{display:flex;flex-direction:column;gap:24px}
+
+/* ============================================================
+   PROGRESS BAR + RANGE
+   ============================================================ */
+.bar{height:5px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.s-light .bar{background:rgba(0,0,0,0.06)}
+.bar > i{display:block;height:100%;border-radius:2px}
+.bar-gr > i{background:var(--gr)}
+.bar-am > i{background:var(--am)}
+.bar-rd > i{background:var(--rd)}
+
+/* ============================================================
+   ACCESSIBILITY — REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:0.001ms!important;animation-iteration-count:1!important;transition-duration:0.001ms!important}
+  .sr{opacity:1!important;transform:none!important}
+}
+
+/* ============================================================
+   FOCUS
+   ============================================================ */
+a:focus-visible,button:focus-visible{outline:2px solid var(--gr);outline-offset:3px;border-radius:2px}
+.s-light a:focus-visible,.s-light button:focus-visible{outline-color:var(--gr2)}
+
+/* ============================================================
+   §8.1 NAV
+   ============================================================ */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 52px;
+  background:var(--ink);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(8px);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:22px;height:22px}
+.brand-word{font-family:var(--fs);font-weight:500;font-size:18px;color:var(--tx);letter-spacing:-0.01em}
+.nav-links{display:flex;align-items:center;gap:36px}
+.nav-links a{
+  font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--tx2);
+}
+.nav-links a:hover{color:var(--tx)}
+
+/* ============================================================
+   §8.2 HERO
+   ============================================================ */
+.hero{
+  position:relative;
+  padding:80px 52px 72px;
+  background:var(--ink);
+  overflow:hidden;
+}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.hero-orb-a{top:-120px;right:-120px;width:560px;height:560px;background:radial-gradient(circle,rgba(20,52,32,0.7) 0%,transparent 65%)}
+.hero-orb-b{bottom:-160px;left:-120px;width:500px;height:500px;background:radial-gradient(circle,rgba(14,35,50,0.45) 0%,transparent 65%)}
+.hero-grid{
+  position:relative;z-index:1;
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.hero h1{margin-top:8px}
+.hero-lead{margin-top:28px}
+.hero-cta{display:flex;align-items:center;gap:14px;margin-top:36px}
+
+/* ---- hero dashboard mock ---- */
+.dash{
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px;
+  padding:24px;
+  display:flex;flex-direction:column;gap:16px;
+  backdrop-filter:blur(8px);
+}
+.dash-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.dash-title{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3)}
+.dash-status{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--gr)}
+.dash-hero-row{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+.ring{width:88px;height:88px;flex-shrink:0;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{stroke:rgba(255,255,255,0.08)}
+.ring-fill{stroke:var(--gr);stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(57,255,110,0.6))}
+.ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num .n{font-family:var(--fd);font-size:28px;line-height:1;color:var(--gr);text-shadow:0 0 6px rgba(57,255,110,0.7),0 0 14px rgba(57,255,110,0.3)}
+.ring-num .of{font-family:var(--fm);font-size:7px;letter-spacing:.14em;color:var(--tx3);margin-top:3px;text-transform:uppercase}
+.life-callout{display:flex;flex-direction:column;gap:4px}
+.life-callout .v{font-family:var(--fd);font-size:34px;line-height:1;color:var(--tx);text-shadow:0 0 12px rgba(255,255,255,0.15)}
+.life-callout .l{font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);margin-top:6px}
+
+.bm-list{display:flex;flex-direction:column;gap:12px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)}
+.bm-row{display:grid;grid-template-columns:18px 1fr 60px 38px;gap:10px;align-items:center}
+.bm-icon{width:14px;height:14px;color:var(--tx2)}
+.bm-name{font-family:var(--fs);font-size:11px;color:var(--tx2)}
+.bm-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.bm-bar > i{display:block;height:100%;border-radius:2px}
+.bm-val{font-family:var(--fm);font-size:10px;color:var(--tx);text-align:right;letter-spacing:.04em}
+
+.dash-insight{
+  background:linear-gradient(135deg,rgba(57,255,110,0.06),rgba(57,255,110,0.02));
+  border:1px solid rgba(57,255,110,0.2);
+  border-radius:10px;
+  padding:14px 16px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.dash-insight-head{display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr)}
+.dash-insight-body{font-family:var(--fs);font-size:11.5px;line-height:1.55;color:var(--tx)}
+.dash-insight-body strong{color:var(--gr);font-weight:500}
+
+/* ============================================================
+   §8.3 MARQUEE
+   ============================================================ */
+.marq{
+  background:#111316;
+  border-top:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:13px 0;
+  overflow:hidden;
+  position:relative;
+}
+.marq-track{
+  display:flex;align-items:center;gap:32px;
+  white-space:nowrap;
+  width:max-content;
+  animation:mq 28s linear infinite;
+}
+.marq-item{
+  display:inline-flex;align-items:center;gap:32px;
+  font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx2);
+}
+.marq-item .dia{color:var(--gr);font-size:8px}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.marq-track{animation:none}}
+
+/* ============================================================
+   §8.4 PROBLEM
+   ============================================================ */
+.prob-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:46px}
+.prob-card{
+  position:relative;
+  background:#fff;border:1px solid #ddd8ce;border-radius:10px;
+  padding:22px;
+  display:flex;flex-direction:column;gap:14px;
+  min-height:180px;
+}
+.prob-card .x{
+  position:absolute;top:14px;right:14px;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(231,76,60,0.12);color:var(--rd);
+  font-size:11px;line-height:1;
+}
+.prob-card .ico{font-size:28px;line-height:1;filter:grayscale(.1)}
+.prob-card .nm{font-family:var(--fd);font-size:18px;line-height:1.2;color:var(--tx-lt)}
+.prob-card .why{font-family:var(--fs);font-size:12px;line-height:1.55;color:var(--tx2-lt)}
+
+.prob-real{
+  margin-top:42px;padding:34px 36px;
+  background:linear-gradient(135deg,#190b0b,#220d0d);
+  border:1px solid rgba(231,76,60,0.25);border-radius:14px;
+  color:var(--tx);
+  display:grid;grid-template-columns:48px 1fr;gap:24px;align-items:start;
+}
+.prob-real .ico-wrap{
+  width:48px;height:48px;border-radius:10px;
+  background:rgba(231,76,60,0.15);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--rd);
+}
+.prob-real .label{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--rd);margin-bottom:10px}
+.prob-real h3{font-family:var(--fd);font-size:24px;line-height:1.2;color:var(--tx);margin-bottom:10px}
+.prob-real p{font-family:var(--fs);font-size:13.5px;line-height:1.7;color:var(--tx2);max-width:780px}
+
+.prob-arrow{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:34px auto;max-width:520px;
+}
+.prob-arrow .ln{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(0,0,0,0.18),transparent)}
+.prob-arrow .lbl{
+  font-family:var(--fm);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gr2);
+}
+
+.prob-sol{
+  padding:34px 36px;
+  background:linear-gradient(135deg,#0f1a12,#0a1209);
+  border:1px solid rgba(57,255,110,0.22);border-radius:14px;
+  color:var(--tx);
+  display:grid;grid-template-columns:48px 1fr;gap:24px;align-items:start;
+}
+.prob-sol .ico-wrap{
+  width:48px;height:48px;border-radius:10px;
+  background:rgba(57,255,110,0.14);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gr);
+}
+.prob-sol .label{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gr);margin-bottom:10px}
+.prob-sol h3{font-family:var(--fd);font-size:24px;line-height:1.2;color:var(--tx);margin-bottom:10px}
+.prob-sol h3 em{color:var(--gr);font-style:italic}
+.prob-sol p{font-family:var(--fs);font-size:13.5px;line-height:1.7;color:var(--tx2);max-width:780px}
+
+/* ============================================================
+   §8.5 FIVE PILLARS
+   ============================================================ */
+.pil-grid{
+  margin-top:46px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:1px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.18);
+}
+.pil-card{
+  background:var(--ink2);
+  padding:26px 22px;
+  display:flex;flex-direction:column;gap:14px;
+  min-height:280px;
+  transition:background .25s var(--ease);
+}
+.pil-card:hover{background:var(--ink3)}
+.pil-num{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3)}
+.pil-ico{font-size:24px;line-height:1}
+.pil-name{font-family:var(--fd);font-size:21px;line-height:1.18;color:var(--tx)}
+.pil-name em{color:var(--gr);font-style:italic}
+.pil-desc{font-family:var(--fs);font-size:12px;line-height:1.6;color:var(--tx2);flex:1}
+.pil-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+
+.pil-rule{
+  margin-top:36px;height:36px;width:100%;
+  background-image:
+    linear-gradient(to right,rgba(255,255,255,0.18) 1px,transparent 1px),
+    linear-gradient(to right,rgba(255,255,255,0.18) 1px,transparent 1px);
+  background-size:20% 100%, 20% 100%;
+  background-position:10% 0, 30% 0;
+  position:relative;
+}
+.pil-rule::before,.pil-rule::after{content:"";position:absolute;top:0;width:1px;height:100%;background:rgba(255,255,255,0.18)}
+.pil-rule::before{left:50%}
+.pil-rule::after{left:70%}
+.pil-rule i{position:absolute;top:0;left:90%;width:1px;height:100%;background:rgba(255,255,255,0.18)}
+
+.cnst-panel{
+  margin-top:0;
+  background:linear-gradient(180deg,#0c0c10 0%,#0a0a0e 100%);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  display:grid;grid-template-columns:340px 1fr;gap:0;
+  min-height:480px;
+  overflow:hidden;
+}
+.cnst-copy{
+  padding:36px;
+  display:flex;flex-direction:column;gap:22px;
+  border-right:1px solid rgba(255,255,255,0.06);
+}
+.cnst-copy h3{font-family:var(--fd);font-size:28px;line-height:1.18;color:var(--tx)}
+.cnst-copy h3 em{color:var(--gr);font-style:italic}
+.cnst-copy p{font-family:var(--fs);font-size:13px;line-height:1.7;color:var(--tx2)}
+.cnst-out{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.cnst-out .row{display:grid;grid-template-columns:8px 1fr;gap:12px;align-items:start}
+.cnst-out .dot{width:6px;height:6px;border-radius:50%;background:var(--gr);box-shadow:0 0 6px rgba(57,255,110,0.6);margin-top:7px}
+.cnst-out .t{font-family:var(--fs);font-size:12.5px;line-height:1.55;color:var(--tx)}
+.cnst-out .t span{color:var(--tx2)}
+
+.cnst-canvas-wrap{position:relative;overflow:hidden}
+#constellationCanvas{display:block;width:100%;height:480px}
+.cnst-cap{position:absolute;top:14px;right:18px;font-family:var(--fm);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--gr);display:flex;align-items:center;gap:6px}
+.cnst-legend{position:absolute;bottom:16px;left:18px;display:flex;flex-wrap:wrap;gap:14px}
+.cnst-legend .li{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.cnst-legend .li i{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+/* ============================================================
+   §8.6 FEATURE ROWS
+   ============================================================ */
+.feat-stack{margin-top:46px;display:flex;flex-direction:column}
+.feat-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+  padding:60px 0;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.feat-row:last-child{border-bottom:1px solid rgba(255,255,255,0.08)}
+.feat-row.flip .feat-copy{order:2}
+.feat-row.flip .feat-vis{order:1}
+.feat-meta{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);margin-bottom:14px}
+.feat-row h3{font-family:var(--fd);font-size:28px;line-height:1.18;color:var(--tx);max-width:440px}
+.feat-row h3 em{color:var(--gr);font-style:italic}
+.feat-row p{font-family:var(--fs);font-size:13px;line-height:1.7;color:var(--tx2);max-width:440px;margin-top:18px}
+.feat-vis{
+  background:var(--ink);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:24px;
+  min-height:340px;
+}
+
+/* — feat 1: Clinical overview — */
+.f-bm{display:flex;flex-direction:column;gap:14px}
+.f-bm-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.f-bm-head .t{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3)}
+.f-bm-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:8px 0}
+.f-bm-row .nm{font-family:var(--fs);font-size:12px;color:var(--tx)}
+.f-bm-row .vl{font-family:var(--fm);font-size:11px;color:var(--tx)}
+.f-range{position:relative;width:140px;height:9px;border-radius:2px;overflow:hidden;display:flex}
+.f-range .lab{flex:1;background:rgba(231,76,60,0.3)}
+.f-range .opt{flex:2;background:rgba(57,255,110,0.25)}
+.f-range .lab2{flex:1;background:rgba(231,76,60,0.3)}
+.f-range .mark{position:absolute;top:-2px;width:2px;height:13px;background:var(--gr);box-shadow:0 0 6px rgba(57,255,110,0.7)}
+
+/* — feat 2: Sleep overview — */
+.f-sleep{display:flex;flex-direction:column;gap:18px}
+.f-sleep-head{display:flex;align-items:center;justify-content:space-between}
+.f-sleep .ring-row{display:flex;align-items:center;gap:24px}
+.f-sleep-stages{display:flex;gap:1px;height:6px;border-radius:2px;overflow:hidden;margin-top:14px}
+.f-sleep-stages .deep{flex:3;background:#3b82f6}
+.f-sleep-stages .rem{flex:2;background:#8b5cf6}
+.f-sleep-stages .light{flex:5;background:#6b7280}
+.f-sleep-leg{display:flex;gap:18px;margin-top:10px}
+.f-sleep-leg .li{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.f-sleep-leg .li i{width:6px;height:6px;border-radius:1px}
+.f-sleep-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06)}
+.f-sleep-stats .stat .n{font-family:var(--fd);font-size:22px;color:var(--tx);line-height:1}
+.f-sleep-stats .stat .l{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-top:6px;display:block}
+
+/* — feat 3: Nutrition + supplements — */
+.f-nut{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f-nut-card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.f-nut-card .hd{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.f-nut-row{display:flex;align-items:center;justify-content:space-between;font-family:var(--fs);font-size:12px;color:var(--tx)}
+.f-nut-row .v{font-family:var(--fm);font-size:11px;color:var(--tx2)}
+.f-supp-row{display:flex;align-items:center;gap:10px;font-family:var(--fs);font-size:12px;color:var(--tx)}
+.f-supp-row .dot{width:6px;height:6px;border-radius:50%;background:var(--gr);box-shadow:0 0 5px rgba(57,255,110,0.6)}
+.f-supp-row .v{margin-left:auto;font-family:var(--fm);font-size:10px;color:var(--tx2)}
+
+/* — feat 4: AI cross-pillar chat — */
+.f-chat{display:flex;flex-direction:column;gap:12px}
+.f-chat .msg{max-width:82%;padding:10px 14px;border-radius:2px 10px 10px 10px;background:rgba(255,255,255,0.04);font-family:var(--fs);font-size:11.5px;line-height:1.55;color:var(--tx)}
+.f-chat .msg strong{color:var(--gr);font-weight:500}
+.f-chat .me{align-self:flex-end;background:rgba(57,255,110,0.1);color:var(--gr);border-radius:10px 10px 2px 10px}
+.f-chat .agent{align-self:flex-start}
+.f-chat .lbl{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:4px}
+
+/* ============================================================
+   §8.7 EHR CONNECT
+   ============================================================ */
+.ehr-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:46px}
+.ehr-bullets{display:flex;flex-direction:column;gap:22px;margin-top:30px}
+.ehr-bullet{display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start}
+.ehr-bullet .ck{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(39,168,85,0.12);border:1px solid rgba(39,168,85,0.3);
+  display:flex;align-items:center;justify-content:center;color:var(--gr2);
+}
+.ehr-bullet h4{font-family:var(--fd);font-size:18px;color:var(--tx-lt);line-height:1.2}
+.ehr-bullet p{font-family:var(--fs);font-size:12.5px;line-height:1.65;color:var(--tx2-lt);margin-top:6px}
+
+.ehr-conn{
+  background:var(--ink);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:24px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.ehr-conn-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ehr-conn-head .t{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3)}
+.prov-row{display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:center;padding:8px 0}
+.prov-logo{
+  width:38px;height:38px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fs);font-weight:500;font-size:11px;color:#fff;letter-spacing:.02em;
+}
+.prov-name{font-family:var(--fs);font-size:13px;color:var(--tx);line-height:1.2}
+.prov-meta{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-top:4px;display:block}
+
+.ehr-flow{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin-top:6px;
+}
+.ehr-flow .ln{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(57,255,110,0.3),transparent)}
+.ehr-flow .lbl{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gr)}
+.ehr-dest{
+  margin-top:14px;padding:18px 22px;
+  background:linear-gradient(135deg,rgba(57,255,110,0.08),rgba(57,255,110,0.02));
+  border:1px solid rgba(57,255,110,0.25);border-radius:10px;
+  display:flex;align-items:center;gap:14px;
+}
+.ehr-dest .ico{width:32px;height:32px;border-radius:8px;background:rgba(57,255,110,0.15);display:flex;align-items:center;justify-content:center;color:var(--gr)}
+.ehr-dest .t{font-family:var(--fs);font-size:13px;color:var(--tx)}
+.ehr-dest .t span{display:block;font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr);margin-top:4px}
+
+/* ============================================================
+   §8.8 VOICE INPUT
+   ============================================================ */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:46px}
+.voice-mock{
+  background:var(--ink2);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:22px;
+  display:flex;flex-direction:column;gap:12px;
+  min-height:420px;
+}
+.voice-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.voice-head .t{display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3)}
+.voice-head .rec{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--rd)}
+.voice-head .rec i{width:7px;height:7px;border-radius:50%;background:var(--rd);box-shadow:0 0 6px rgba(231,76,60,0.6);animation:blink 2s infinite}
+.v-sys{align-self:center;font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr);padding:4px 10px;border-radius:100px;background:rgba(57,255,110,0.08);border:1px solid rgba(57,255,110,0.18)}
+.v-msg{max-width:88%;padding:12px 14px;border-radius:2px 12px 12px 12px;background:rgba(255,255,255,0.04);font-family:var(--fs);font-size:12px;line-height:1.55;color:var(--tx)}
+.v-msg.me{align-self:flex-end;border-radius:12px 12px 2px 12px;background:rgba(57,255,110,0.1);color:var(--gr)}
+.v-msg.ai strong{color:var(--gr);font-weight:500}
+.v-lbl{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:4px}
+.v-grp{display:flex;flex-direction:column}
+.v-grp.right{align-items:flex-end}
+.v-mic{
+  margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border:1px solid rgba(255,255,255,0.1);border-radius:100px;
+  font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx2);
+}
+.v-mic .wave{display:flex;align-items:flex-end;gap:2px;height:14px;margin-left:auto}
+.v-mic .wave i{width:2px;background:var(--gr);border-radius:1px}
+.v-mic .wave i:nth-child(1){height:30%}
+.v-mic .wave i:nth-child(2){height:80%}
+.v-mic .wave i:nth-child(3){height:50%}
+.v-mic .wave i:nth-child(4){height:90%}
+.v-mic .wave i:nth-child(5){height:40%}
+.v-mic .wave i:nth-child(6){height:70%}
+
+/* ============================================================
+   §8.9 INSIGHT + REASONING
+   ============================================================ */
+.reason-panel{
+  margin-top:46px;
+  background:var(--paper2);
+  border:1px solid #ddd8ce;
+  border-radius:14px;
+  padding:34px;
+  display:grid;grid-template-columns:1fr 1.1fr;gap:42px;
+  align-items:start;
+}
+.reason-case h3{font-family:var(--fd);font-size:24px;line-height:1.2;color:var(--tx-lt)}
+.reason-case h3 em{color:var(--gr2);font-style:italic}
+.reason-case p{font-family:var(--fs);font-size:13px;line-height:1.7;color:var(--tx2-lt);margin-top:14px;max-width:380px}
+.reason-case .meta{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3-lt);margin-bottom:14px}
+.reason-chain{display:flex;flex-direction:column;gap:14px;position:relative}
+.reason-step{
+  display:grid;grid-template-columns:30px 1fr;gap:14px;align-items:flex-start;
+}
+.reason-step .num{
+  width:26px;height:26px;border-radius:50%;
+  background:#fff;border:1px solid #ddd8ce;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:10px;color:var(--tx-lt);
+}
+.reason-step .body{
+  background:#fff;border:1px solid #ddd8ce;border-radius:10px;
+  padding:12px 14px;
+  font-family:var(--fs);font-size:12.5px;line-height:1.6;color:var(--tx-lt);
+}
+.reason-step .body .lab{font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr2);margin-bottom:4px;display:block}
+.reason-step .body strong{color:var(--gr2);font-weight:500}
+.reason-step.final .body{background:linear-gradient(135deg,rgba(39,168,85,0.08),rgba(39,168,85,0.02));border-color:rgba(39,168,85,0.3)}
+
+/* ============================================================
+   §8.10 AI COUNCIL
+   ============================================================ */
+.coun-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:64px;align-items:start;margin-top:46px}
+.coun-list{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.coun-agent{
+  display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:center;
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;
+  padding:14px 16px;
+  transition:background .25s var(--ease);
+}
+.coun-agent:hover{background:rgba(255,255,255,0.05)}
+.coun-ico{
+  width:38px;height:38px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.coun-name{font-family:var(--fd);font-size:16px;color:var(--tx);line-height:1.2}
+.coun-style{font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);display:block;margin-top:4px}
+.coun-desc{font-family:var(--fs);font-size:12px;color:var(--tx2);max-width:220px;line-height:1.5}
+
+.deb{
+  background:var(--ink2);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:24px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.deb-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.deb-head .t{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3)}
+.deb-q{font-family:var(--fd);font-style:italic;font-size:15px;line-height:1.45;color:var(--tx);padding:8px 0 4px;max-width:480px}
+.deb-bub{padding:11px 14px;border-radius:10px;font-family:var(--fs);font-size:12px;line-height:1.55;color:var(--tx);max-width:88%}
+.deb-bub .lbl{display:block;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.deb-card{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)}
+.deb-card .lbl{color:#818cf8}
+.deb-gas{background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.2)}
+.deb-gas .lbl{color:#fb923c}
+.deb-sleep{background:rgba(77,212,255,0.08);border:1px solid rgba(77,212,255,0.18)}
+.deb-sleep .lbl{color:#4dd4ff}
+.deb-syn{background:linear-gradient(135deg,rgba(57,255,110,0.1),rgba(57,255,110,0.04));border:1px solid rgba(57,255,110,0.3);align-self:stretch;max-width:100%}
+.deb-syn .lbl{color:var(--gr)}
+.deb-syn strong{color:var(--gr);font-weight:500}
+
+/* ============================================================
+   §8.11 HEALTH PASSPORT
+   ============================================================ */
+.pass-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:46px}
+.pass{
+  border-radius:14px;
+  padding:26px;
+  display:flex;flex-direction:column;gap:18px;
+  min-height:380px;
+}
+.pass-lt{background:#fff;border:1px solid #ddd8ce;color:var(--tx-lt)}
+.pass-dk{background:linear-gradient(160deg,#0f1a12,#08100a);border:1px solid rgba(57,255,110,0.25);color:var(--tx)}
+.pass-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid currentColor;border-color:#ddd8ce}
+.pass-dk .pass-head{border-color:rgba(57,255,110,0.18)}
+.pass-head .t{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+.pass-lt .pass-head .t{color:var(--tx3-lt)}
+.pass-dk .pass-head .t{color:var(--gr)}
+.pass-id{font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase}
+.pass-lt .pass-id{color:var(--tx3-lt)}
+.pass-dk .pass-id{color:var(--tx3)}
+.pass-name{font-family:var(--fd);font-size:24px;line-height:1.15}
+.pass-name .role{display:block;font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;margin-top:6px}
+.pass-lt .pass-name .role{color:var(--tx3-lt)}
+.pass-dk .pass-name .role{color:var(--tx3)}
+.pass-rows{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.pass-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;font-family:var(--fs);font-size:12px;padding:6px 0;border-bottom:1px dashed}
+.pass-lt .pass-row{border-color:#e8e3da;color:var(--tx-lt)}
+.pass-dk .pass-row{border-color:rgba(255,255,255,0.06);color:var(--tx)}
+.pass-row .v{font-family:var(--fm);font-size:11px;letter-spacing:.04em}
+.pass-dk .pass-row .v{color:var(--gr)}
+
+.pass-doc{margin-top:auto;padding:12px 14px;border-radius:10px;display:flex;align-items:center;gap:12px}
+.pass-lt .pass-doc{background:#f6f2ea;border:1px solid #ddd8ce}
+.pass-dk .pass-doc{background:rgba(57,255,110,0.06);border:1px solid rgba(57,255,110,0.2)}
+.pass-doc .ico{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.pass-lt .pass-doc .ico{background:#fff;color:var(--tx-lt)}
+.pass-dk .pass-doc .ico{background:rgba(57,255,110,0.15);color:var(--gr)}
+.pass-doc .t{font-family:var(--fs);font-size:12px;line-height:1.4}
+.pass-doc .t span{display:block;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.pass-lt .pass-doc .t span{color:var(--tx3-lt)}
+.pass-dk .pass-doc .t span{color:var(--tx3)}
+.pass-chips{display:flex;gap:6px;margin-left:auto}
+
+/* ============================================================
+   §8.12 VISIT PREP
+   ============================================================ */
+.visit-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:start;margin-top:46px}
+.visit-card{
+  background:#fff;border:1px solid #ddd8ce;border-radius:14px;
+  padding:30px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.visit-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid #e8e3da}
+.visit-head .t{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3-lt)}
+.visit-head .when{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gr2)}
+.visit-block h4{font-family:var(--fd);font-size:16px;color:var(--tx-lt);line-height:1.2;margin-bottom:8px}
+.visit-block .lab{font-family:var(--fm);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--gr2);margin-bottom:8px;display:block}
+.visit-block ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.visit-block li{display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:start;font-family:var(--fs);font-size:12.5px;line-height:1.55;color:var(--tx-lt)}
+.visit-block li .b{width:5px;height:5px;border-radius:50%;background:var(--gr2);margin-top:7px}
+.visit-block li .v{font-family:var(--fm);font-size:10px;color:var(--tx2-lt)}
+.visit-block li strong{color:var(--tx-lt);font-weight:500}
+
+/* ============================================================
+   §8.13 REMINDERS
+   ============================================================ */
+.rem-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:start;margin-top:46px}
+.rem-list{display:flex;flex-direction:column;gap:0;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.rem-row{
+  display:grid;grid-template-columns:200px 1fr;gap:24px;
+  padding:18px 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  align-items:start;
+}
+.rem-trig{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--rd);line-height:1.5}
+.rem-trig span{display:block;color:var(--tx3);margin-top:4px}
+.rem-resp{font-family:var(--fs);font-size:13px;line-height:1.65;color:var(--tx)}
+.rem-resp strong{color:var(--gr);font-weight:500}
+.rem-resp .meta{display:block;margin-top:6px;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+
+/* ============================================================
+   §8.14 COACHING
+   ============================================================ */
+.coach-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:46px}
+.coach-mock{
+  background:var(--ink2);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:22px;
+  display:flex;flex-direction:column;gap:12px;
+  min-height:480px;
+}
+.coach-head{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.coach-av{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#0f1a12,#06120a);
+  border:1px solid rgba(57,255,110,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:14px;color:var(--gr);
+}
+.coach-head .info{flex:1}
+.coach-head .nm{font-family:var(--fd);font-size:15px;color:var(--tx);line-height:1}
+.coach-head .st{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--gr);margin-top:5px}
+.coach-msg{padding:11px 14px;border-radius:2px 12px 12px 12px;background:rgba(255,255,255,0.04);font-family:var(--fs);font-size:12px;line-height:1.55;color:var(--tx);max-width:88%}
+.coach-msg.me{align-self:flex-end;border-radius:12px 12px 2px 12px;background:rgba(57,255,110,0.1);color:var(--gr)}
+.coach-msg.ai strong{color:var(--gr);font-weight:500}
+.coach-evt{align-self:center;font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr);padding:4px 10px;border-radius:100px;background:rgba(57,255,110,0.08);border:1px solid rgba(57,255,110,0.18)}
+.coach-lbl{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:4px}
+.coach-grp{display:flex;flex-direction:column}
+.coach-grp.right{align-items:flex-end}
+
+/* ============================================================
+   §8.15 PHYSICIAN
+   ============================================================ */
+.phys{
+  margin-top:36px;
+  background:#fff;border:1px solid #ddd8ce;border-left:2px solid var(--gr2);
+  border-radius:10px;
+  padding:32px 36px;
+  display:grid;grid-template-columns:60px 1fr;gap:24px;
+  align-items:start;
+}
+.phys-mono{
+  width:54px;height:54px;border-radius:50%;
+  background:#0f1a12;color:var(--gr);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:18px;letter-spacing:.04em;
+  border:1px solid rgba(57,255,110,0.25);
+}
+.phys blockquote{margin:0;font-family:var(--fd);font-style:italic;font-size:18px;line-height:1.5;color:var(--tx-lt);max-width:760px}
+.phys blockquote em{color:var(--gr2);font-style:italic}
+.phys-by{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.phys-by .who{font-family:var(--fs);font-size:13px;color:var(--tx-lt)}
+.phys-by .who span{color:var(--tx2-lt);font-size:12px}
+.phys-by .ten{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3-lt)}
+
+.inst-row{display:flex;align-items:center;gap:36px;flex-wrap:wrap;margin-top:34px;padding-top:30px;border-top:1px solid #ddd8ce}
+.inst-row .lbl{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3-lt)}
+.inst-row .nm{font-family:var(--fd);font-size:16px;color:var(--tx-lt);opacity:.7}
+
+/* ============================================================
+   §8.16 BIG STATEMENT
+   ============================================================ */
+.statement{padding:120px 52px;background:var(--paper);text-align:center}
+.statement-inner{max-width:1100px;margin:0 auto}
+.statement h2{font-family:var(--fd);font-weight:400;font-size:clamp(36px,5vw,68px);line-height:1.0;color:var(--tx-lt);letter-spacing:-0.01em}
+.statement h2 em{color:var(--gr2);font-style:italic}
+.statement p{font-family:var(--fs);font-size:15px;line-height:1.75;color:var(--tx2-lt);max-width:560px;margin:36px auto 0}
+
+/* ============================================================
+   §8.17 BOTTOM CTA
+   ============================================================ */
+.cta{
+  position:relative;
+  padding:130px 52px;
+  background:var(--ink);
+  text-align:center;
+  overflow:hidden;
+}
+#particleRing{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:0;opacity:0.7;pointer-events:none;
+}
+.cta-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.cta .kicker{justify-content:center;display:inline-flex;color:var(--gr);margin-bottom:32px}
+.cta .kicker::after{display:none}
+.cta h2{
+  font-family:var(--fd);font-weight:400;
+  font-size:clamp(44px,6.5vw,88px);line-height:.93;letter-spacing:-0.02em;
+  color:var(--tx);
+}
+.cta h2 em{color:var(--gr);font-style:italic}
+.cta-actions{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:46px;flex-wrap:wrap}
+.cta-stores{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:34px;flex-wrap:wrap}
+.store-badge{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:12px 18px;
+  background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+  color:var(--tx);
+  transition:opacity .25s var(--ease), transform .25s var(--ease);
+}
+.store-badge:hover{opacity:.88;transform:translateY(-2px)}
+.store-badge .ico{width:22px;height:22px;color:var(--tx)}
+.store-badge .col{display:flex;flex-direction:column;text-align:left;line-height:1.1}
+.store-badge .col .a{font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx2)}
+.store-badge .col .b{font-family:var(--fs);font-size:13px;color:var(--tx);margin-top:3px}
+
+/* ============================================================
+   §8.18 FOOTER
+   ============================================================ */
+.foot{
+  background:var(--ink);
+  padding:26px 52px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.foot-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.foot-l{display:flex;align-items:center;gap:14px;font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.foot-l .brand-mark{width:18px;height:18px}
+.foot-r{display:flex;align-items:center;gap:24px}
+.foot-r a{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.foot-r a:hover{color:var(--tx2)}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     §8.1 NAV
+     ============================================================ -->
+<nav class="nav" id="nav">
+  <a class="brand" href="#" aria-label="+Life">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="1.2" result="b1"/>
+          <feGaussianBlur stdDeviation="3.5" result="b2"/>
+          <feGaussianBlur stdDeviation="7"   result="b3"/>
+          <feMerge>
+            <feMergeNode in="b3"/>
+            <feMergeNode in="b2"/>
+            <feMergeNode in="b1"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <g stroke="#39ff6e" stroke-width="2.4" stroke-linecap="round" filter="url(#neonGlow)" fill="none">
+        <line x1="12" y1="3" x2="12" y2="9"/>
+        <line x1="12" y1="15" x2="12" y2="21"/>
+        <line x1="3" y1="12" x2="9" y2="12"/>
+        <line x1="15" y1="12" x2="21" y2="12"/>
+      </g>
+    </svg>
+    <span class="brand-word">Life</span>
+  </a>
+  <div class="nav-links">
+    <a href="#">Platform</a>
+    <a href="#">Data sources</a>
+    <a href="#">Pricing</a>
+    <a class="btn btn-nav" href="https://health-coach-theta.vercel.app" target="_blank" rel="noopener noreferrer">Get early access</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     §8.2 HERO
+     ============================================================ -->
+<section class="hero" id="hero">
+  <div class="hero-orb hero-orb-a" aria-hidden="true"></div>
+  <div class="hero-orb hero-orb-b" aria-hidden="true"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="kicker sr left short">Personal Health &amp; Wellbeing OS</div>
+      <h1 class="disp h1 sr left d1">Your body<br>runs on <em>data</em>.<br>Now so do <em>you</em>.</h1>
+      <p class="lead hero-lead sr left d2">+Life is a single operating system for your health. It ingests your medical records, biometrics, nutrition, movement and genome, and turns them into one continuously updating picture — and one set of next steps.</p>
+      <div class="hero-cta sr left d3">
+        <a class="btn btn-pri" href="https://health-coach-theta.vercel.app" target="_blank" rel="noopener noreferrer">Start for free →</a>
+        <a class="btn btn-ghost" href="#">Watch demo</a>
+      </div>
+    </div>
+
+    <!-- DASHBOARD MOCK -->
+    <div class="dash sr right d2" aria-label="Your Health OS dashboard preview">
+      <div class="dash-head">
+        <div class="dash-title">Your Health OS · Live</div>
+        <div class="dash-status"><span class="live-dot" aria-hidden="true"></span>Synced</div>
+      </div>
+
+      <div class="dash-hero-row">
+        <div class="ring" aria-hidden="true">
+          <svg viewBox="0 0 88 88">
+            <circle class="ring-track" cx="44" cy="44" r="32" fill="none" stroke-width="6"/>
+            <circle class="ring-fill" cx="44" cy="44" r="32" fill="none" stroke-width="6" stroke-dasharray="168.9 201.06"/>
+          </svg>
+          <div class="ring-num"><span class="n">84</span><span class="of">out of 100</span></div>
+        </div>
+        <div class="life-callout">
+          <span class="mono" style="color:var(--tx3)">Projected</span>
+          <span class="v">+5.2 years</span>
+          <span class="l">Health span added</span>
+        </div>
+      </div>
+
+      <div class="bm-list">
+        <div class="bm-row">
+          <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="bm-name">Heart</span>
+          <span class="bm-bar bar-gr"><i style="width:88%"></i></span>
+          <span class="bm-val">88</span>
+        </div>
+        <div class="bm-row">
+          <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h3l2-6 4 12 2-6h7"/></svg>
+          <span class="bm-name">Metabolic</span>
+          <span class="bm-bar bar-am"><i style="width:70%"></i></span>
+          <span class="bm-val">70</span>
+        </div>
+        <div class="bm-row">
+          <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span class="bm-name">Longevity</span>
+          <span class="bm-bar bar-gr"><i style="width:82%"></i></span>
+          <span class="bm-val">82</span>
+        </div>
+        <div class="bm-row">
+          <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v6m0 8v6M4 12H2m20 0h-2M6 6 4.5 4.5M19.5 19.5 18 18M6 18l-1.5 1.5M19.5 4.5 18 6"/></svg>
+          <span class="bm-name">Hormonal</span>
+          <span class="bm-bar bar-am"><i style="width:56%"></i></span>
+          <span class="bm-val">56</span>
+        </div>
+        <div class="bm-row">
+          <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span class="bm-name">Sleep</span>
+          <span class="bm-bar bar-gr"><i style="width:76%"></i></span>
+          <span class="bm-val">76</span>
+        </div>
+        <div class="bm-row">
+          <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="bm-name">Immune</span>
+          <span class="bm-bar bar-am"><i style="width:68%"></i></span>
+          <span class="bm-val">68</span>
+        </div>
+      </div>
+
+      <div class="dash-insight">
+        <div class="dash-insight-head"><span class="live-dot" aria-hidden="true"></span>AI Insight · Today</div>
+        <div class="dash-insight-body">Your <strong>HRV dropped 14%</strong> after two nights below 6h sleep. Pushing tomorrow's training to Thursday raises projected recovery by <strong>+22%</strong>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.3 MARQUEE
+     ============================================================ -->
+<section class="marq" id="marquee" aria-label="Connected data sources">
+  <div class="marq-track">
+    <span class="marq-item">
+      Apple Health <span class="dia" aria-hidden="true">✦</span>
+      Epic MyChart <span class="dia" aria-hidden="true">✦</span>
+      Oracle Health <span class="dia" aria-hidden="true">✦</span>
+      Cerner <span class="dia" aria-hidden="true">✦</span>
+      Oura <span class="dia" aria-hidden="true">✦</span>
+      Whoop <span class="dia" aria-hidden="true">✦</span>
+      Garmin <span class="dia" aria-hidden="true">✦</span>
+      Fitbit <span class="dia" aria-hidden="true">✦</span>
+      Withings <span class="dia" aria-hidden="true">✦</span>
+      Dexcom <span class="dia" aria-hidden="true">✦</span>
+      Levels <span class="dia" aria-hidden="true">✦</span>
+      LabCorp <span class="dia" aria-hidden="true">✦</span>
+      Quest Diagnostics <span class="dia" aria-hidden="true">✦</span>
+      23andMe <span class="dia" aria-hidden="true">✦</span>
+      Nucleus Genomics <span class="dia" aria-hidden="true">✦</span>
+      InsideTracker <span class="dia" aria-hidden="true">✦</span>
+      Function Health <span class="dia" aria-hidden="true">✦</span>
+      Cronometer <span class="dia" aria-hidden="true">✦</span>
+      MyFitnessPal <span class="dia" aria-hidden="true">✦</span>
+      b.well <span class="dia" aria-hidden="true">✦</span>
+    </span>
+    <span class="marq-item" aria-hidden="true">
+      Apple Health <span class="dia">✦</span>
+      Epic MyChart <span class="dia">✦</span>
+      Oracle Health <span class="dia">✦</span>
+      Cerner <span class="dia">✦</span>
+      Oura <span class="dia">✦</span>
+      Whoop <span class="dia">✦</span>
+      Garmin <span class="dia">✦</span>
+      Fitbit <span class="dia">✦</span>
+      Withings <span class="dia">✦</span>
+      Dexcom <span class="dia">✦</span>
+      Levels <span class="dia">✦</span>
+      LabCorp <span class="dia">✦</span>
+      Quest Diagnostics <span class="dia">✦</span>
+      23andMe <span class="dia">✦</span>
+      Nucleus Genomics <span class="dia">✦</span>
+      InsideTracker <span class="dia">✦</span>
+      Function Health <span class="dia">✦</span>
+      Cronometer <span class="dia">✦</span>
+      MyFitnessPal <span class="dia">✦</span>
+      b.well <span class="dia">✦</span>
+    </span>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.4 PROBLEM
+     ============================================================ -->
+<section class="sec s-light" id="problem">
+  <div class="sec-inner">
+    <div class="kicker sr">Why everything else fails</div>
+    <h2 class="disp h2 sr d1">Dozens of tools.<br>They all <em>failed</em> the same way.</h2>
+    <p class="desc sr d2" style="margin-top:22px">You've tried the rings, the scales, the lab kits, the chatbots, the meal apps. Each gives you one thin slice of yourself — and none of them talk to each other.</p>
+
+    <div class="prob-grid">
+      <div class="prob-card sr up d1"><span class="x" aria-hidden="true">✕</span><div class="ico" aria-hidden="true">⌚</div><div class="nm">Wearable rings</div><div class="why">Tells you your sleep was bad. Doesn't tell you why, or what to change.</div></div>
+      <div class="prob-card sr up d2"><span class="x" aria-hidden="true">✕</span><div class="ico" aria-hidden="true">🧪</div><div class="nm">Annual labs</div><div class="why">100 markers, 12 pages, no follow-up. You file it and forget it.</div></div>
+      <div class="prob-card sr up d3"><span class="x" aria-hidden="true">✕</span><div class="ico" aria-hidden="true">🥗</div><div class="nm">Diet trackers</div><div class="why">Logs calories. Has no idea what your blood, sleep or stress are doing.</div></div>
+      <div class="prob-card sr up d4"><span class="x" aria-hidden="true">✕</span><div class="ico" aria-hidden="true">🤖</div><div class="nm">AI chatbots</div><div class="why">Answers anything in general. Knows nothing about you specifically.</div></div>
+    </div>
+
+    <div class="prob-real sr up">
+      <div class="ico-wrap" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div>
+        <div class="label">The real problem</div>
+        <h3>Your health lives in twenty places. None of them know each other.</h3>
+        <p>Every app holds a tiny shard of you. Your cardiologist can't see your CGM. Your nutrition app can't see your hormone panel. You become a translator between systems that should be talking — and you lose the signal that only emerges when all of it is in one place.</p>
+      </div>
+    </div>
+
+    <div class="prob-arrow"><span class="ln"></span><span class="lbl">+ Life solves this ↓</span><span class="ln"></span></div>
+
+    <div class="prob-sol sr up">
+      <div class="ico-wrap" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div>
+        <div class="label">One operating system</div>
+        <h3>One system that <em>sees everything</em>, and tells you what matters next.</h3>
+        <p>+Life pulls every signal — clinical, biometric, nutritional, behavioral, genetic — into a single living picture, then surfaces the small set of changes that actually move your trajectory. Not more data. The right next step.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.5 FIVE PILLARS + CONSTELLATION
+     ============================================================ -->
+<section class="sec s-dark" id="pillars">
+  <div class="sec-inner">
+    <div class="kicker sr">The five pillars</div>
+    <h2 class="disp h2 sr d1">One OS. Five streams of <em>truth</em><br>about your body.</h2>
+    <p class="desc sr d2" style="margin-top:22px">Every dimension of your physiology, captured continuously, modeled together. No pillar exists alone — and that's exactly the point.</p>
+
+    <div class="pil-grid sr up d1">
+      <div class="pil-card">
+        <div class="pil-num">01 — Clinical health</div>
+        <div class="pil-ico" aria-hidden="true">🩺</div>
+        <div class="pil-name">Your <em>medical</em> story, decoded.</div>
+        <div class="pil-desc">Lab panels, imaging, EHR notes, prescriptions. Parsed and tracked over time, not buried in a portal.</div>
+        <div class="pil-tags"><span class="tag tag-gr">EHR</span><span class="tag tag-gr">LABS</span><span class="tag tag-lt">IMAGING</span></div>
+      </div>
+      <div class="pil-card">
+        <div class="pil-num">02 — Sleep</div>
+        <div class="pil-ico" aria-hidden="true">🌙</div>
+        <div class="pil-name">Your <em>recovery</em> engine.</div>
+        <div class="pil-desc">Stage architecture, HRV, resting HR, oxygenation. Quality, not just hours.</div>
+        <div class="pil-tags"><span class="tag tag-gr">HRV</span><span class="tag tag-gr">STAGES</span><span class="tag tag-lt">SpO₂</span></div>
+      </div>
+      <div class="pil-card">
+        <div class="pil-num">03 — Nutrition</div>
+        <div class="pil-ico" aria-hidden="true">🥗</div>
+        <div class="pil-name">Your <em>fuel</em> profile.</div>
+        <div class="pil-desc">Macros, micronutrients, supplement stack, glucose response. What you eat — and how you respond.</div>
+        <div class="pil-tags"><span class="tag tag-gr">MACROS</span><span class="tag tag-gr">CGM</span><span class="tag tag-lt">SUPPS</span></div>
+      </div>
+      <div class="pil-card">
+        <div class="pil-num">04 — Movement</div>
+        <div class="pil-ico" aria-hidden="true">⚡</div>
+        <div class="pil-name">Your <em>output</em> over time.</div>
+        <div class="pil-desc">Cardio load, strength volume, VO₂ max, recovery debt. Training as a long curve, not isolated sessions.</div>
+        <div class="pil-tags"><span class="tag tag-gr">VO₂</span><span class="tag tag-gr">LOAD</span><span class="tag tag-lt">STRENGTH</span></div>
+      </div>
+      <div class="pil-card">
+        <div class="pil-num">05 — Genome</div>
+        <div class="pil-ico" aria-hidden="true">🧬</div>
+        <div class="pil-name">Your <em>baseline</em> code.</div>
+        <div class="pil-desc">Polygenic risk, pharmacogenomics, methylation pathways. The static layer everything else reads against.</div>
+        <div class="pil-tags"><span class="tag tag-gr">SNPs</span><span class="tag tag-gr">PRS</span><span class="tag tag-lt">PHARMA</span></div>
+      </div>
+    </div>
+
+    <div class="pil-rule sr" aria-hidden="true"><i></i></div>
+
+    <div class="cnst-panel sr up d1">
+      <div class="cnst-copy">
+        <h3>One <em>intelligent</em> OS, learning across every pillar.</h3>
+        <p>Signals never stay siloed. Your sleep talks to your training. Your training talks to your genome. Your labs talk to your nutrition. The model finds the cross-pillar links a single specialist would never see.</p>
+        <div class="cnst-out">
+          <div class="row"><span class="dot" aria-hidden="true"></span><span class="t">ApoB rising → <span>tighten saturated fat, add zone-2 volume</span></span></div>
+          <div class="row"><span class="dot" aria-hidden="true"></span><span class="t">Low ferritin × HRV drop → <span>iron retest, deload week</span></span></div>
+          <div class="row"><span class="dot" aria-hidden="true"></span><span class="t">MTHFR variant + low B12 → <span>switch to methylfolate</span></span></div>
+          <div class="row"><span class="dot" aria-hidden="true"></span><span class="t">Cortisol AM × poor deep sleep → <span>shift caffeine cutoff to 10am</span></span></div>
+        </div>
+      </div>
+      <div class="cnst-canvas-wrap">
+        <canvas id="constellationCanvas" aria-hidden="true"></canvas>
+        <div class="cnst-cap"><span class="live-dot" aria-hidden="true"></span>Live · cross-pillar map</div>
+        <div class="cnst-legend" aria-hidden="true">
+          <div class="li"><i style="background:#ff6b6b"></i>Clinical</div>
+          <div class="li"><i style="background:#4dd4ff"></i>Sleep</div>
+          <div class="li"><i style="background:#39ff6e"></i>Nutrition</div>
+          <div class="li"><i style="background:#ffa53b"></i>Movement</div>
+          <div class="li"><i style="background:#c084fc"></i>Genome</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.6 FEATURE ROWS
+     ============================================================ -->
+<section class="sec s-dark2" id="features">
+  <div class="sec-inner">
+    <div class="kicker sr">What you get</div>
+    <h2 class="disp h2 sr d1">Five pillars.<br>One <em>complete</em> picture.</h2>
+    <p class="desc sr d2" style="margin-top:22px">Each pillar gets its own deep view, but no view stands alone. Every chart is read by every other.</p>
+
+    <div class="feat-stack">
+
+      <!-- ROW 1 — Clinical -->
+      <div class="feat-row sr up">
+        <div class="feat-copy">
+          <div class="feat-meta">01 — Clinical health</div>
+          <h3>Every lab marker in <em>context</em>, not just in range.</h3>
+          <p>Not just "in range" or "out of range". +Life shows you where each marker sits inside the optimal band, how it's trending across years, and which other pillars are pushing it.</p>
+        </div>
+        <div class="feat-vis">
+          <div class="f-bm">
+            <div class="f-bm-head"><span class="t">Cardiometabolic panel</span><span class="mono">12 markers · today</span></div>
+            <div class="f-bm-row"><span class="nm">ApoB</span><span class="f-range"><span class="lab"></span><span class="opt"></span><span class="lab2"></span><span class="mark" style="left:38%"></span></span><span class="vl">78 mg/dL</span></div>
+            <div class="f-bm-row"><span class="nm">LDL-C</span><span class="f-range"><span class="lab"></span><span class="opt"></span><span class="lab2"></span><span class="mark" style="left:55%"></span></span><span class="vl">102 mg/dL</span></div>
+            <div class="f-bm-row"><span class="nm">HDL-C</span><span class="f-range"><span class="lab"></span><span class="opt"></span><span class="lab2"></span><span class="mark" style="left:62%"></span></span><span class="vl">61 mg/dL</span></div>
+            <div class="f-bm-row"><span class="nm">Lp(a)</span><span class="f-range"><span class="lab"></span><span class="opt"></span><span class="lab2"></span><span class="mark" style="left:22%"></span></span><span class="vl">14 nmol/L</span></div>
+            <div class="f-bm-row"><span class="nm">hs-CRP</span><span class="f-range"><span class="lab"></span><span class="opt"></span><span class="lab2"></span><span class="mark" style="left:48%"></span></span><span class="vl">0.6 mg/L</span></div>
+            <div class="f-bm-row"><span class="nm">Fasting glucose</span><span class="f-range"><span class="lab"></span><span class="opt"></span><span class="lab2"></span><span class="mark" style="left:50%"></span></span><span class="vl">88 mg/dL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2 — Sleep -->
+      <div class="feat-row flip sr up">
+        <div class="feat-copy">
+          <div class="feat-meta">02 — Sleep</div>
+          <h3>Sleep as <em>architecture</em>, not a single number.</h3>
+          <p>See deep, REM and light separately. Watch how last night's structure changes today's HRV, today's mood, today's tolerance for training. The model learns your personal recovery curve.</p>
+        </div>
+        <div class="feat-vis">
+          <div class="f-sleep">
+            <div class="f-sleep-head">
+              <div>
+                <div class="mono" style="color:var(--tx3)">Tonight's sleep</div>
+                <div style="font-family:var(--fd);font-size:34px;color:var(--tx);line-height:1;margin-top:6px">7h 42m</div>
+              </div>
+              <div class="ring" style="width:72px;height:72px" aria-hidden="true">
+                <svg viewBox="0 0 88 88">
+                  <circle class="ring-track" cx="44" cy="44" r="32" fill="none" stroke-width="6"/>
+                  <circle class="ring-fill" cx="44" cy="44" r="32" fill="none" stroke-width="6" stroke-dasharray="153 201.06"/>
+                </svg>
+                <div class="ring-num"><span class="n" style="font-size:22px">76</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="mono" style="color:var(--tx3);margin-bottom:8px">Stage architecture</div>
+              <div class="f-sleep-stages" aria-hidden="true"><span class="deep"></span><span class="rem"></span><span class="light"></span></div>
+              <div class="f-sleep-leg"><span class="li"><i style="background:#3b82f6"></i>Deep 1h 42m</span><span class="li"><i style="background:#8b5cf6"></i>REM 1h 14m</span><span class="li"><i style="background:#6b7280"></i>Light 4h 46m</span></div>
+            </div>
+            <div class="f-sleep-stats">
+              <div class="stat"><span class="n">52</span><span class="l">HRV ms</span></div>
+              <div class="stat"><span class="n">48</span><span class="l">Resting HR</span></div>
+              <div class="stat"><span class="n">96%</span><span class="l">SpO₂ avg</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3 — Nutrition -->
+      <div class="feat-row sr up">
+        <div class="feat-copy">
+          <div class="feat-meta">03 — Nutrition</div>
+          <h3>Food, supplements and your <em>response</em>, in one frame.</h3>
+          <p>Macros, micronutrients and your personal supplement stack — paired with your CGM curves and lab markers, so a meal is never just calories. It's a measurable change in your blood.</p>
+        </div>
+        <div class="feat-vis">
+          <div class="f-nut">
+            <div class="f-nut-card">
+              <div class="hd">Today · Macros</div>
+              <div class="f-nut-row"><span>Protein</span><span class="v">142 g</span></div>
+              <div class="bar bar-gr"><i style="width:78%"></i></div>
+              <div class="f-nut-row"><span>Carbs</span><span class="v">218 g</span></div>
+              <div class="bar bar-am"><i style="width:62%"></i></div>
+              <div class="f-nut-row"><span>Fat</span><span class="v">74 g</span></div>
+              <div class="bar bar-gr"><i style="width:55%"></i></div>
+              <div class="f-nut-row"><span>Fiber</span><span class="v">38 g</span></div>
+              <div class="bar bar-gr"><i style="width:84%"></i></div>
+            </div>
+            <div class="f-nut-card">
+              <div class="hd">Stack · 6 of 7 logged</div>
+              <div class="f-supp-row"><span class="dot" aria-hidden="true"></span>Vitamin D3 5000 IU<span class="v">8:12 AM</span></div>
+              <div class="f-supp-row"><span class="dot" aria-hidden="true"></span>Omega-3 2g<span class="v">8:12 AM</span></div>
+              <div class="f-supp-row"><span class="dot" aria-hidden="true"></span>Magnesium glyc.<span class="v">10:04 PM</span></div>
+              <div class="f-supp-row"><span class="dot" aria-hidden="true"></span>Methylfolate<span class="v">8:12 AM</span></div>
+              <div class="f-supp-row"><span class="dot" aria-hidden="true"></span>Creatine 5g<span class="v">5:30 PM</span></div>
+              <div class="f-supp-row"><span class="dot" aria-hidden="true" style="background:#6a6560;box-shadow:none"></span><span style="color:var(--tx3)">B12 — pending</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 4 — AI cross-pillar chat -->
+      <div class="feat-row flip sr up">
+        <div class="feat-copy">
+          <div class="feat-meta">04 — Cross-pillar AI</div>
+          <h3>Ask anything. Get an <em>answer</em> built from all of you.</h3>
+          <p>Not generic advice. Every reply pulls from your labs, sleep, training, food, and genome at once — the way a brilliant doctor with infinite time would actually think.</p>
+        </div>
+        <div class="feat-vis">
+          <div class="f-chat">
+            <div>
+              <div class="lbl">You · 2:14 PM</div>
+              <div class="msg me">Why am I so flat in the gym this week?</div>
+            </div>
+            <div>
+              <div class="lbl">+Life · synthesis</div>
+              <div class="msg agent">Three signals point the same way. Your <strong>HRV is down 18%</strong> over 5 days. <strong>Ferritin trended low</strong> on your last panel. And you've slept under 6h on 4 of the last 7 nights. This is recovery debt, not a strength plateau.</div>
+            </div>
+            <div>
+              <div class="lbl">+Life · suggested move</div>
+              <div class="msg agent">Swap tomorrow's heavy session for <strong>zone-2 + mobility</strong>, push your caffeine cutoff to 10am, and re-test ferritin in 2 weeks. Projected HRV recovery: <strong>+22% in 7 days</strong>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.7 EHR CONNECT
+     ============================================================ -->
+<section class="sec s-light" id="ehr">
+  <div class="sec-inner">
+    <div class="ehr-grid">
+      <div>
+        <div class="kicker sr">EHR · Records connect</div>
+        <h2 class="disp h2 sr d1">Connect your records once.<br><em>Done</em> forever.</h2>
+        <p class="desc sr d2" style="margin-top:22px">Every visit, every lab, every prescription — pulled directly from your providers, parsed, and added to your living record. You never re-enter anything.</p>
+        <div class="ehr-bullets">
+          <div class="ehr-bullet sr d1">
+            <div class="ck" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><h4>Direct from your providers</h4><p>Connect Epic, Cerner, Oracle Health and 250+ U.S. health systems through certified FHIR pipes.</p></div>
+          </div>
+          <div class="ehr-bullet sr d2">
+            <div class="ck" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><h4>Parsed into structured data</h4><p>Free-text notes become structured markers, trends and timelines — not PDFs you'll never re-open.</p></div>
+          </div>
+          <div class="ehr-bullet sr d3">
+            <div class="ck" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><h4>Encrypted and yours alone</h4><p>HIPAA-grade encryption end-to-end. Your data never trains a model. Export it, delete it, move it, anytime.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr right">
+        <div class="ehr-conn">
+          <div class="ehr-conn-head"><span class="t">Connected providers</span><span class="mono" style="color:var(--gr)">4 active</span></div>
+          <div class="prov-row">
+            <div class="prov-logo" style="background:#cb1f27" aria-hidden="true">E</div>
+            <div><div class="prov-name">Epic MyChart</div><span class="prov-meta">Stanford Health · last sync 2m ago</span></div>
+            <span class="pill pill-gr">Synced</span>
+          </div>
+          <div class="prov-row">
+            <div class="prov-logo" style="background:linear-gradient(135deg,#ff6b6b,#ff9472)" aria-hidden="true">A</div>
+            <div><div class="prov-name">Apple Health Records</div><span class="prov-meta">Personal · last sync 14m ago</span></div>
+            <span class="pill pill-gr">Synced</span>
+          </div>
+          <div class="prov-row">
+            <div class="prov-logo" style="background:#0d7e7e" aria-hidden="true">b</div>
+            <div><div class="prov-name">b.well</div><span class="prov-meta">Aggregator · last sync 38m ago</span></div>
+            <span class="pill pill-gr">Synced</span>
+          </div>
+          <div class="prov-row">
+            <div class="prov-logo" style="background:#3a3a3f" aria-hidden="true">O</div>
+            <div><div class="prov-name">Oracle Health</div><span class="prov-meta">Kaiser · pending auth</span></div>
+            <span class="pill pill-lt">Connect</span>
+          </div>
+        </div>
+        <div class="ehr-flow"><span class="ln"></span><span class="lbl">Encrypted · auto-parsed</span><span class="ln"></span></div>
+        <div class="ehr-dest">
+          <div class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6m0 8v6M4 12H2m20 0h-2"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <div class="t">Your living health record<span>One source of truth · always current</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.8 VOICE INPUT
+     ============================================================ -->
+<section class="sec s-dark" id="voice">
+  <div class="sec-inner">
+    <div class="voice-grid">
+      <div>
+        <div class="kicker sr">Voice input</div>
+        <h2 class="disp h2 sr d1">Just <em>talk</em> to it.<br>Logging is over.</h2>
+        <p class="desc sr d2" style="margin-top:22px">Speak a meal, a workout, a symptom, a supplement. +Life parses, normalizes and files it — across the right pillars — with confirmation, not friction.</p>
+        <div class="stack" style="margin-top:30px;gap:18px">
+          <div class="ehr-bullet sr d1">
+            <div class="ck" aria-hidden="true" style="background:rgba(57,255,110,0.12);border-color:rgba(57,255,110,0.3);color:var(--gr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
+            <div><h4 style="color:var(--tx)">No forms. No taxonomy.</h4><p style="color:var(--tx2)">Speak in your own words. The model maps "two coffees and a bowl of yogurt" to actual macros and timing.</p></div>
+          </div>
+          <div class="ehr-bullet sr d2">
+            <div class="ck" aria-hidden="true" style="background:rgba(57,255,110,0.12);border-color:rgba(57,255,110,0.3);color:var(--gr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><h4 style="color:var(--tx)">Confirmed before it lands</h4><p style="color:var(--tx2)">Every entry shows you what was understood and where it was filed. Tap to correct, never twice.</p></div>
+          </div>
+          <div class="ehr-bullet sr d3">
+            <div class="ck" aria-hidden="true" style="background:rgba(57,255,110,0.12);border-color:rgba(57,255,110,0.3);color:var(--gr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><h4 style="color:var(--tx)">10 seconds, end of day</h4><p style="color:var(--tx2)">A 10-second voice memo replaces 10 minutes of tapping across three apps. That's the only logging you do.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="voice-mock sr right">
+        <div class="voice-head"><span class="t">Voice log · Tuesday</span><span class="rec"><i aria-hidden="true"></i>Listening</span></div>
+        <div class="v-grp right"><span class="v-lbl">You · 7:42 PM</span><div class="v-msg me">"Had grilled salmon, half a sweet potato, big salad with olive oil. Took my magnesium."</div></div>
+        <div class="v-sys">Parsed · 4 items</div>
+        <div class="v-grp"><span class="v-lbl">+Life · confirmed</span><div class="v-msg ai">Logged dinner: <strong>~38g protein, 32g carbs, 22g fat</strong>. Filed magnesium glycinate to your <strong>evening stack</strong>. Updated today's macro totals.</div></div>
+        <div class="v-grp right"><span class="v-lbl">You · 7:43 PM</span><div class="v-msg me">"Felt a little wired today, slept poorly."</div></div>
+        <div class="v-grp"><span class="v-lbl">+Life · cross-pillar</span><div class="v-msg ai">Noted. I'm seeing your <strong>caffeine logged at 3:40 PM</strong>. Want me to suggest a 10am cutoff for the rest of the week and watch HRV?</div></div>
+        <div class="v-mic" aria-hidden="true"><span>Tap to speak</span><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.9 INSIGHT + REASONING
+     ============================================================ -->
+<section class="sec s-light" id="insight">
+  <div class="sec-inner">
+    <div class="kicker sr">How it thinks</div>
+    <h2 class="disp h2 sr d1">Every insight comes with its <em>reasoning</em>.</h2>
+    <p class="desc sr d2" style="margin-top:22px">Nothing is a black box. Every recommendation shows you exactly which signals it pulled, how it combined them, and what it concluded — so you can trust it, or push back.</p>
+
+    <div class="reason-panel sr up">
+      <div class="reason-case">
+        <div class="meta">Case · low energy, week of Apr 22</div>
+        <h3>From "I'm flat" to a <em>specific</em> next move, in five steps.</h3>
+        <p>A real example of how +Life chained four pillars together to find the actual cause — and the smallest change that fixes it.</p>
+        <div style="margin-top:24px;display:flex;align-items:center;gap:12px">
+          <span class="mono" style="color:var(--gr2)">Confidence</span>
+          <div style="flex:1;max-width:140px" class="bar bar-gr"><i style="width:88%;background:var(--gr2)"></i></div>
+          <span style="font-family:var(--fm);font-size:11px;color:var(--tx-lt)">88%</span>
+        </div>
+      </div>
+      <div class="reason-chain">
+        <div class="reason-step"><div class="num">1</div><div class="body"><span class="lab">Trigger</span>You reported low energy 3 days running, gym sessions felt heavy.</div></div>
+        <div class="reason-step"><div class="num">2</div><div class="body"><span class="lab">Sleep pillar</span>HRV down <strong>18%</strong> over 5 nights. Deep sleep averaging <strong>52 min</strong>, vs your 84-min baseline.</div></div>
+        <div class="reason-step"><div class="num">3</div><div class="body"><span class="lab">Clinical pillar</span>Last panel showed <strong>ferritin at 38 ng/mL</strong> — within lab range, but in your bottom quartile historically.</div></div>
+        <div class="reason-step"><div class="num">4</div><div class="body"><span class="lab">Nutrition pillar</span>Iron intake fell to <strong>~9mg/day</strong> after you cut red meat 6 weeks ago. No replacement source logged.</div></div>
+        <div class="reason-step final"><div class="num">5</div><div class="body"><span class="lab">Conclusion · suggested move</span>Recovery debt + iron shortfall, not training plateau. <strong>Re-test ferritin in 14 days, add iron-rich meals 3x/week, deload one cycle.</strong> Projected HRV recovery: +22% in a week.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.10 AI COUNCIL
+     ============================================================ -->
+<section class="sec s-dark" id="council">
+  <div class="sec-inner">
+    <div class="coun-grid">
+      <div>
+        <div class="kicker sr">AI council</div>
+        <h2 class="disp h2 sr d1">An <em>AI council</em> of specialists, one calm answer.</h2>
+        <p class="desc sr d2" style="margin-top:22px">Behind every recommendation, multiple specialist agents debate your case from their lens — cardiology, endocrinology, sleep, gut, behavior. You see the synthesis. You can also see them argue.</p>
+
+        <div class="coun-list">
+          <div class="coun-agent sr d1">
+            <div class="coun-ico" style="background:rgba(99,102,241,0.12);color:#818cf8" aria-hidden="true">🫀</div>
+            <div><div class="coun-name">Cardiology</div><span class="coun-style">Conservative · risk-first</span></div>
+            <div class="coun-desc">ApoB, Lp(a), CAC, BP — long-arc cardiovascular risk.</div>
+          </div>
+          <div class="coun-agent sr d2">
+            <div class="coun-ico" style="background:rgba(251,146,60,0.12);color:#fb923c" aria-hidden="true">🥗</div>
+            <div><div class="coun-name">Gastroenterology</div><span class="coun-style">Empirical · gut-first</span></div>
+            <div class="coun-desc">Microbiome, fiber load, food sensitivities, transit.</div>
+          </div>
+          <div class="coun-agent sr d3">
+            <div class="coun-ico" style="background:rgba(77,212,255,0.12);color:#4dd4ff" aria-hidden="true">😴</div>
+            <div><div class="coun-name">Sleep medicine</div><span class="coun-style">Evidence-led · stage-aware</span></div>
+            <div class="coun-desc">Architecture, HRV recovery, light timing.</div>
+          </div>
+          <div class="coun-agent sr d4">
+            <div class="coun-ico" style="background:rgba(192,132,252,0.12);color:#c084fc" aria-hidden="true">🧬</div>
+            <div><div class="coun-name">Genomics</div><span class="coun-style">Variant-aware · pathway-first</span></div>
+            <div class="coun-desc">SNPs, PRS, methylation, pharmacogenomics.</div>
+          </div>
+          <div class="coun-agent sr d5">
+            <div class="coun-ico" style="background:rgba(241,196,15,0.12);color:var(--am)" aria-hidden="true">⚖️</div>
+            <div><div class="coun-name">Endocrinology</div><span class="coun-style">Hormonal · cycle-aware</span></div>
+            <div class="coun-desc">Thyroid, cortisol, sex-hormone balance over time.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="deb sr right">
+        <div class="deb-head"><span class="t">Council debate · case 04-22</span><span class="mono" style="color:var(--gr)">live</span></div>
+        <div class="deb-q">"Why is my LDL still climbing after 8 weeks of diet changes?"</div>
+
+        <div class="deb-bub deb-card"><span class="lbl">Cardiology · 14:32</span>Diet alone won't move LDL fast for genetic responders. ApoE 3/4 is in this profile — recommend re-baseline at 12 weeks, prepare to consider statin if Lp(a) stays high.</div>
+        <div class="deb-bub deb-gas"><span class="lbl">Gastroenterology · 14:33</span>Fiber intake jumped to 38g, that should help. Saturated fat from dairy is still 18g — that's likely the active driver. Suggest swap to olive oil + nuts for 6 weeks before escalating.</div>
+        <div class="deb-bub deb-sleep"><span class="lbl">Sleep medicine · 14:34</span>Sleep debt is suppressing leptin and pushing appetite for high-fat snacks. Architecture is the upstream lever here — fix sleep first, then re-measure.</div>
+
+        <div class="deb-bub deb-syn"><span class="lbl">+ Life synthesis</span>The council agrees: <strong>diet alone is unlikely to be enough</strong>, but the smallest high-leverage move is to <strong>swap dairy fat → olive oil + nuts for 6 weeks</strong> while also <strong>restoring sleep architecture</strong> (caffeine cutoff 10am). Re-test ApoB at 12 weeks. Statin conversation only if no movement by then.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.11 HEALTH PASSPORT
+     ============================================================ -->
+<section class="sec s-light" id="passport">
+  <div class="sec-inner">
+    <div class="kicker sr">Health passport</div>
+    <h2 class="disp h2 sr d1">Your whole health, on <em>one page</em>.</h2>
+    <p class="desc sr d2" style="margin-top:22px">A continuously updating, doctor-readable summary of you. Bring it to a visit, share it with a specialist, hand it to a new provider — instead of starting from scratch.</p>
+
+    <div class="pass-grid">
+      <div class="pass pass-lt sr up d1">
+        <div class="pass-head"><span class="t">+ Life passport · light</span><span class="pass-id">ID 4F8-219K · v.42</span></div>
+        <div><div class="pass-name">A. Ivanov<span class="role">Patient · 38 · M</span></div></div>
+        <div class="pass-rows">
+          <div class="pass-row"><span>Resting HR / HRV</span><span class="v">52 / 64ms</span></div>
+          <div class="pass-row"><span>BP (7-day avg)</span><span class="v">118 / 76</span></div>
+          <div class="pass-row"><span>ApoB · LDL · Lp(a)</span><span class="v">78 · 102 · 14</span></div>
+          <div class="pass-row"><span>Fasting glucose · HbA1c</span><span class="v">88 · 5.2</span></div>
+          <div class="pass-row"><span>Vit D · Ferritin · B12</span><span class="v">42 · 38 · 412</span></div>
+          <div class="pass-row"><span>VO₂ max</span><span class="v">48</span></div>
+        </div>
+        <div class="pass-doc">
+          <div class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="t">Visit summary · 1 page<span>Updated 2 minutes ago</span></div>
+          <div class="pass-chips"><span class="badge badge-gr">OK 18</span><span class="badge badge-am">Watch 3</span><span class="badge badge-rd">Miss 1</span></div>
+        </div>
+      </div>
+
+      <div class="pass pass-dk sr up d2">
+        <div class="pass-head"><span class="t">+ Life passport · clinical</span><span class="pass-id">ID 4F8-219K · v.42</span></div>
+        <div><div class="pass-name">A. Ivanov<span class="role">Patient · 38 · M</span></div></div>
+        <div class="pass-rows">
+          <div class="pass-row"><span>Resting HR / HRV</span><span class="v">52 / 64ms</span></div>
+          <div class="pass-row"><span>BP (7-day avg)</span><span class="v">118 / 76</span></div>
+          <div class="pass-row"><span>ApoB · LDL · Lp(a)</span><span class="v">78 · 102 · 14</span></div>
+          <div class="pass-row"><span>Fasting glucose · HbA1c</span><span class="v">88 · 5.2</span></div>
+          <div class="pass-row"><span>Vit D · Ferritin · B12</span><span class="v">42 · 38 · 412</span></div>
+          <div class="pass-row"><span>VO₂ max</span><span class="v">48</span></div>
+        </div>
+        <div class="pass-doc">
+          <div class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="t">Specialist export · PDF<span>Encrypted, single-share link</span></div>
+          <div class="pass-chips"><span class="badge badge-gr">OK 18</span><span class="badge badge-am">Watch 3</span><span class="badge badge-rd">Miss 1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.12 VISIT PREP
+     ============================================================ -->
+<section class="sec s-light" id="visit" style="background:var(--paper2);padding-top:0">
+  <div class="sec-inner" style="padding-top:100px;border-top:1px solid #ddd8ce">
+    <div class="visit-grid">
+      <div>
+        <div class="kicker sr">Visit prep</div>
+        <h2 class="disp h2 sr d1">Walk in <em>prepared</em>.<br>Walk out with answers.</h2>
+        <p class="desc sr d2" style="margin-top:22px">+Life builds a 1-page briefing before every visit — what's changed since last time, what's flagged, what to ask. Your 15-minute slot stops being a fishing trip.</p>
+        <div class="stack" style="margin-top:30px;gap:18px">
+          <div class="ehr-bullet sr d1"><div class="ck" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><h4>Pre-built question list</h4><p>The 3–5 questions worth asking, ranked by what's actually changed.</p></div></div>
+          <div class="ehr-bullet sr d2"><div class="ck" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><h4>Trends, not snapshots</h4><p>Every marker shown in trend, not as one anxious dot.</p></div></div>
+          <div class="ehr-bullet sr d3"><div class="ck" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><h4>Shareable in one tap</h4><p>Send to your provider's portal or print. Their EHR can ingest it directly.</p></div></div>
+        </div>
+      </div>
+
+      <div class="visit-card sr right">
+        <div class="visit-head"><span class="t">Pre-visit briefing · Dr. Liu · primary care</span><span class="when">Apr 30 · 9:30 AM</span></div>
+        <div class="visit-block">
+          <span class="lab">What's changed since last visit</span>
+          <ul>
+            <li><span class="b" aria-hidden="true"></span>HRV down <strong>18%</strong> over 5 nights, still recovering<span class="v">7 days</span></li>
+            <li><span class="b" aria-hidden="true"></span>Ferritin trending toward bottom quartile<span class="v">3 mo</span></li>
+            <li><span class="b" aria-hidden="true"></span>ApoB up <strong>+12 mg/dL</strong> after diet change<span class="v">8 wk</span></li>
+          </ul>
+        </div>
+        <div class="visit-block">
+          <span class="lab">Worth asking</span>
+          <ul>
+            <li><span class="b" aria-hidden="true"></span>Repeat iron panel today — can we draw it before I leave?<span class="v">5 min</span></li>
+            <li><span class="b" aria-hidden="true"></span>Lp(a) is normal but ApoE is 3/4 — re-baseline lipids at 12 weeks?<span class="v">discuss</span></li>
+            <li><span class="b" aria-hidden="true"></span>Sleep medicine referral worth it given HRV pattern?<span class="v">discuss</span></li>
+          </ul>
+        </div>
+        <div class="visit-block">
+          <span class="lab">Working list of meds & supps</span>
+          <ul>
+            <li><span class="b" aria-hidden="true"></span>Vit D3 5000 IU · Omega-3 2g · Magnesium glyc.<span class="v">daily</span></li>
+            <li><span class="b" aria-hidden="true"></span>Methylfolate 800 µg (MTHFR variant)<span class="v">daily</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.13 REMINDERS
+     ============================================================ -->
+<section class="sec s-dark" id="reminders">
+  <div class="sec-inner">
+    <div class="rem-grid">
+      <div>
+        <div class="kicker sr">Adaptive reminders</div>
+        <h2 class="disp h2 sr d1">Reminders that <em>rewrite</em> themselves when life moves.</h2>
+        <p class="desc sr d2" style="margin-top:22px">Static reminders fail the moment your day shifts. +Life watches the signal and reshapes the plan in real time — the nudge you actually needed, not the one you set last Sunday.</p>
+      </div>
+
+      <div class="rem-list sr right">
+        <div class="rem-row">
+          <div class="rem-trig">Trigger · You skipped breakfast<span>9:48 AM</span></div>
+          <div class="rem-resp">Pushing your <strong>creatine + magnesium</strong> dose to your 11:30 lunch instead of pre-workout. Reset back to morning tomorrow if you eat earlier.<span class="meta">Auto-rescheduled · Nutrition pillar</span></div>
+        </div>
+        <div class="rem-row">
+          <div class="rem-trig">Trigger · HRV down 14% overnight<span>7:02 AM</span></div>
+          <div class="rem-resp">Today's heavy session is now <strong>zone-2 + mobility</strong>. Reminder to push your lift to Thursday. Keeping protein target unchanged.<span class="meta">Auto-rewritten · Movement pillar</span></div>
+        </div>
+        <div class="rem-row">
+          <div class="rem-trig">Trigger · Travel day detected<span>5:14 AM</span></div>
+          <div class="rem-resp">Hydration target raised to <strong>3.4L</strong>. Caffeine cutoff moved to local 11am. Sleep window flagged 90 min earlier to offset jet lag.<span class="meta">Auto-adapted · Sleep pillar</span></div>
+        </div>
+        <div class="rem-row">
+          <div class="rem-trig">Trigger · Cold symptoms logged<span>9:12 PM</span></div>
+          <div class="rem-resp">Pausing your training reminders for 48h. Vit D + zinc bumped, ibuprofen suggested only if you cross fever threshold. Will re-check tomorrow.<span class="meta">Auto-paused · Immune signal</span></div>
+        </div>
+        <div class="rem-row">
+          <div class="rem-trig">Trigger · Period day 1 detected<span>6:30 AM</span></div>
+          <div class="rem-resp">Iron-rich meal suggestions added. Strength volume target lowered <strong>15%</strong> for 3 days. Sleep window extended 30 min.<span class="meta">Cycle-aware · Hormonal pillar</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.14 COACHING
+     ============================================================ -->
+<section class="sec s-dark2" id="coaching">
+  <div class="sec-inner">
+    <div class="coach-grid">
+      <div>
+        <div class="kicker sr">Coaching</div>
+        <h2 class="disp h2 sr d1">A coach that <em>knows</em> you, not your category.</h2>
+        <p class="desc sr d2" style="margin-top:22px">Daily, conversational, available. It checks in when something shifts, not on a schedule. It celebrates the small wins and warns about the early signals — because it actually sees the data.</p>
+        <div class="stack" style="margin-top:30px;gap:18px">
+          <div class="ehr-bullet sr d1"><div class="ck" aria-hidden="true" style="background:rgba(57,255,110,0.12);border-color:rgba(57,255,110,0.3);color:var(--gr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><h4 style="color:var(--tx)">Personal context, every reply</h4><p style="color:var(--tx2)">Knows your training history, your last labs, your sleep last night, your supplement stack.</p></div></div>
+          <div class="ehr-bullet sr d2"><div class="ck" aria-hidden="true" style="background:rgba(57,255,110,0.12);border-color:rgba(57,255,110,0.3);color:var(--gr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><h4 style="color:var(--tx)">Proactive, not chatty</h4><p style="color:var(--tx2)">Stays quiet when nothing's wrong. Speaks up the moment a marker drifts.</p></div></div>
+          <div class="ehr-bullet sr d3"><div class="ck" aria-hidden="true" style="background:rgba(57,255,110,0.12);border-color:rgba(57,255,110,0.3);color:var(--gr)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><h4 style="color:var(--tx)">Asks for the next 1% — not the next overhaul</h4><p style="color:var(--tx2)">Tiny, sustainable nudges. The compounding kind.</p></div></div>
+        </div>
+      </div>
+
+      <div class="coach-mock sr right">
+        <div class="coach-head">
+          <div class="coach-av" aria-hidden="true">+</div>
+          <div class="info"><div class="nm">+Life coach</div><div class="st"><span class="live-dot" aria-hidden="true"></span>Active · listening</div></div>
+        </div>
+
+        <div class="coach-grp"><span class="coach-lbl">+Life · 7:14 AM</span><div class="coach-msg ai">Morning. HRV is back up to <strong>58ms</strong>, so today's lift is back on. Aim for <strong>~6 sets</strong> on squats, leave 2 reps in the tank.</div></div>
+        <div class="coach-evt">Supplements logged · 9:42 AM</div>
+        <div class="coach-grp right"><span class="coach-lbl">You · 12:30 PM</span><div class="coach-msg me">Been craving sweet stuff all morning, weird.</div></div>
+        <div class="coach-grp"><span class="coach-lbl">+Life · 12:31 PM</span><div class="coach-msg ai">You're <strong>~28g protein</strong> behind your morning target and you slept 6h 12m. That combo usually drives the craving for you. Try a higher-protein lunch first, see if it fades.</div></div>
+        <div class="coach-evt">Lunch logged · 1:14 PM · 42g protein</div>
+        <div class="coach-grp"><span class="coach-lbl">+Life · 3:30 PM</span><div class="coach-msg ai">Cravings should ease in the next hour. Logging this — pattern of <strong>poor sleep → carb-craving by noon</strong> in 7 of the last 10 short-sleep days.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.15 PHYSICIAN
+     ============================================================ -->
+<section class="sec s-light" id="physician">
+  <div class="sec-inner">
+    <div class="kicker sr">Physician collaboration</div>
+    <h2 class="disp h2 sr d1">Built <em>with</em> physicians, used inside the visit.</h2>
+    <p class="desc sr d2" style="margin-top:22px">+Life isn't a wall between you and your provider. It's the brief they get before they walk in the room — and the record they update on the way out.</p>
+
+    <div class="phys sr up">
+      <div class="phys-mono" aria-hidden="true">DR</div>
+      <div>
+        <blockquote>"My patients used to bring printouts and a list of half-remembered worries. Now they bring a +Life passport. I can see the trends, the cross-pillar links, and the questions worth asking — in the first <em>ninety seconds</em> of the visit. It changes what we can do in fifteen minutes."</blockquote>
+        <div class="phys-by">
+          <div class="who">Dr. Maya Reyes, MD<span> · Internal medicine, longevity</span></div>
+          <div class="ten">Clinical advisor · 14 years practice</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inst-row sr">
+      <span class="lbl">Used by clinicians at</span>
+      <span class="nm">Stanford Health</span>
+      <span class="nm">UCSF</span>
+      <span class="nm">Mount Sinai</span>
+      <span class="nm">Cleveland Clinic</span>
+      <span class="nm">Mass General</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.16 BIG STATEMENT
+     ============================================================ -->
+<section class="statement" id="statement">
+  <div class="statement-inner">
+    <h2 class="sr">No single app sees<br>the whole picture.<br><em>+Life does.</em></h2>
+    <p class="sr d1">Not another tracker. Not another chatbot. The single operating system your health has been waiting for — quiet when nothing is wrong, present when it matters, and finally, all of you in one place.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.17 BOTTOM CTA
+     ============================================================ -->
+<section class="cta" id="cta">
+  <canvas id="particleRing" aria-hidden="true"></canvas>
+  <div class="cta-inner">
+    <div class="kicker sr">Your personal health OS</div>
+    <h2 class="sr d1">Own your <em>biology</em>.</h2>
+    <div class="cta-actions sr d2">
+      <a class="btn btn-pri" href="https://health-coach-theta.vercel.app" target="_blank" rel="noopener noreferrer">Get early access →</a>
+      <a class="btn btn-ghost" href="#">Watch demo</a>
+    </div>
+    <div class="cta-stores sr d3">
+      <a class="store-badge" href="#" aria-label="Download on the App Store">
+        <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        <div class="col"><span class="a">Download on the</span><span class="b">App Store</span></div>
+      </a>
+      <a class="store-badge" href="#" aria-label="Get it on Google Play">
+        <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.61 1.81c-.39.39-.61.92-.61 1.49v17.4c0 .57.22 1.1.61 1.49l.07.06L13.4 12.5v-.27L3.68 1.75l-.07.06zm10.5 11.4l3.27 3.27-9.7 5.51c-.31.18-.66.18-.97.01l7.4-8.79zm0-3.42L6.71 1.01c.31-.17.66-.17.97.01l9.7 5.51-3.27 3.27zm6.3 1.71c.39.22.62.6.62 1s-.23.78-.62 1l-2.6 1.48-3.42-3.42 3.42-3.42 2.6 1.36z"/></svg>
+        <div class="col"><span class="a">Get it on</span><span class="b">Google Play</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §8.18 FOOTER
+     ============================================================ -->
+<footer class="foot" id="footer">
+  <div class="foot-inner">
+    <div class="foot-l">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+        <g stroke="#39ff6e" stroke-width="2.4" stroke-linecap="round" filter="url(#neonGlow)" fill="none">
+          <line x1="12" y1="3" x2="12" y2="9"/>
+          <line x1="12" y1="15" x2="12" y2="21"/>
+          <line x1="3" y1="12" x2="9" y2="12"/>
+          <line x1="15" y1="12" x2="21" y2="12"/>
+        </g>
+      </svg>
+      <span>© 2026 +Life · All rights reserved</span>
+    </div>
+    <div class="foot-r">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Security</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============================================================
+     SCROLL REVEAL
+     ============================================================ */
+  var srEls = document.querySelectorAll('.sr');
+  if (reduceMotion){
+    srEls.forEach(function(el){ el.classList.add('vis'); });
+  } else if ('IntersectionObserver' in window){
+    var srObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting){
+          en.target.classList.add('vis');
+          srObs.unobserve(en.target);
+        }
+      });
+    }, { rootMargin:'0px 0px -10% 0px', threshold:0.05 });
+    srEls.forEach(function(el){ srObs.observe(el); });
+  } else {
+    srEls.forEach(function(el){ el.classList.add('vis'); });
+  }
+
+  /* ============================================================
+     §7.3(a) CROSS-PILLAR CONSTELLATION CANVAS
+     ============================================================ */
+  (function(){
+    var canvas = document.getElementById('constellationCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0;
+    var raf = null, running = false;
+
+    var PILLARS = [
+      { name:'clinical',  color:'#ff6b6b' },
+      { name:'sleep',     color:'#4dd4ff' },
+      { name:'nutrition', color:'#39ff6e' },
+      { name:'movement',  color:'#ffa53b' },
+      { name:'genome',    color:'#c084fc' }
+    ];
+    var nodes = [];
+    var edges = [];
+
+    function init(){
+      var rect = canvas.getBoundingClientRect();
+      W = rect.width; H = rect.height;
+      canvas.width  = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      var bottomMargin = 60;
+      var zoneW = W / PILLARS.length;
+      var nodeCount = 90;
+
+      nodes = [];
+      for (var i=0; i<nodeCount; i++){
+        var p = i % PILLARS.length;
+        nodes.push({
+          pi: p,
+          color: PILLARS[p].color,
+          x: zoneW * p + 20 + Math.random() * (zoneW - 40),
+          y: 30 + Math.random() * (H - 30 - bottomMargin),
+          vx: (Math.random()-0.5) * 0.24,
+          vy: (Math.random()-0.5) * 0.24,
+          r: 1.4 + Math.random() * 1.4,
+          phase: Math.random() * Math.PI * 2,
+          freq: 0.012 + Math.random() * 0.02
+        });
+      }
+
+      edges = [];
+      for (var k=0; k<150; k++){
+        var a = (Math.random()*nodes.length)|0;
+        var b = (Math.random()*nodes.length)|0;
+        if (a === b) continue;
+        if (nodes[a].pi === nodes[b].pi) continue;
+        edges.push({ a:a, b:b, phase: Math.random()*Math.PI*2, freq: 0.008 + Math.random()*0.014 });
+      }
+    }
+
+    function step(){
+      if (!running){ raf = null; return; }
+      ctx.clearRect(0,0,W,H);
+
+      var bottomMargin = 60;
+      // edges
+      for (var i=0; i<edges.length; i++){
+        var e = edges[i];
+        var n1 = nodes[e.a], n2 = nodes[e.b];
+        e.phase += e.freq;
+        var alpha = 0.12 + 0.18 * (0.5 + 0.5*Math.sin(e.phase));
+        var grad = ctx.createLinearGradient(n1.x, n1.y, n2.x, n2.y);
+        grad.addColorStop(0, n1.color);
+        grad.addColorStop(1, n2.color);
+        ctx.strokeStyle = grad;
+        ctx.globalAlpha = alpha;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(n1.x, n1.y);
+        ctx.lineTo(n2.x, n2.y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // nodes
+      for (var j=0; j<nodes.length; j++){
+        var n = nodes[j];
+        // drift
+        n.x += n.vx + (Math.random()-0.5)*0.04;
+        n.y += n.vy + (Math.random()-0.5)*0.04;
+        // bounce
+        if (n.x < 6 || n.x > W-6) n.vx *= -1;
+        if (n.y < 6 || n.y > H - bottomMargin) n.vy *= -1;
+        n.x = Math.max(6, Math.min(W-6, n.x));
+        n.y = Math.max(6, Math.min(H - bottomMargin, n.y));
+        n.phase += n.freq;
+        var op = 0.7 + 0.3 * Math.sin(n.phase);
+
+        // glow
+        var rg = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+        rg.addColorStop(0, n.color);
+        rg.addColorStop(1, 'transparent');
+        ctx.globalAlpha = op * 0.55;
+        ctx.fillStyle = rg;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI*2);
+        ctx.fill();
+
+        // core
+        ctx.globalAlpha = op;
+        ctx.fillStyle = n.color;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      raf = requestAnimationFrame(step);
+    }
+
+    function start(){ if (running || reduceMotion) return; running = true; if (!nodes.length) init(); raf = requestAnimationFrame(step); }
+    function stop(){ running = false; if (raf){ cancelAnimationFrame(raf); raf = null; } }
+
+    init();
+    if (reduceMotion){
+      // draw one static frame
+      running = true; step(); running = false;
+    } else if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if (en.isIntersecting) start(); else stop(); });
+      }, { threshold:0.05 });
+      io.observe(canvas);
+    } else {
+      start();
+    }
+
+    var rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){
+        var wasRunning = running;
+        stop();
+        init();
+        if (wasRunning) start();
+        else if (reduceMotion){ running = true; step(); running = false; }
+      }, 180);
+    });
+  })();
+
+  /* ============================================================
+     §7.3(b) ORBITAL PARTICLE RING CANVAS
+     ============================================================ */
+  (function(){
+    var canvas = document.getElementById('particleRing');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0, cx = 0, cy = 0, baseR = 0;
+    var particles = [];
+    var raf = null, running = false;
+    var COUNT = 800;
+
+    function init(){
+      var rect = canvas.getBoundingClientRect();
+      W = rect.width; H = rect.height;
+      canvas.width  = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      cx = W/2; cy = H/2;
+      baseR = Math.min(W,H) * 0.42;
+
+      particles = [];
+      for (var i=0; i<COUNT; i++){
+        var ang = Math.random() * Math.PI * 2;
+        var rOff = (Math.random() - 0.5) * 0.44; // ±22%
+        var r = baseR * (1 + rOff);
+        particles.push({
+          a: ang,
+          va: (Math.random() < 0.5 ? -1 : 1) * (0.0008 + Math.random() * 0.0035),
+          r: r,
+          size: 0.4 + Math.random() * 2.2,
+          baseOp: 0.2 + Math.random() * 0.8,
+          phase: Math.random() * Math.PI * 2,
+          freq: 0.04,
+          color: (Math.random() < 0.85) ? '#39ff6e' : '#a7f3c4'
+        });
+      }
+    }
+
+    function step(){
+      if (!running){ raf = null; return; }
+      ctx.clearRect(0,0,W,H);
+      for (var i=0; i<particles.length; i++){
+        var p = particles[i];
+        p.a += p.va;
+        p.phase += p.freq;
+        var op = p.baseOp * (0.55 + 0.45 * Math.sin(p.phase));
+        var x = cx + Math.cos(p.a) * p.r;
+        var y = cy + Math.sin(p.a) * p.r;
+        ctx.globalAlpha = op;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(x, y, p.size, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(step);
+    }
+
+    function start(){ if (running || reduceMotion) return; running = true; if (!particles.length) init(); raf = requestAnimationFrame(step); }
+    function stop(){ running = false; if (raf){ cancelAnimationFrame(raf); raf = null; } }
+
+    init();
+    if (reduceMotion){
+      running = true; step(); running = false;
+    } else if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if (en.isIntersecting) start(); else stop(); });
+      }, { threshold:0.01 });
+      io.observe(canvas);
+    } else {
+      start();
+    }
+
+    var rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){
+        var wasRunning = running;
+        stop();
+        init();
+        if (wasRunning) start();
+        else if (reduceMotion){ running = true; step(); running = false; }
+      }, 180);
+    });
+  })();
+
+})();
+</script>
+
+</body>
+</html>
