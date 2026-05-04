@@ -26,8 +26,9 @@ export default async function handler(req, res) {
   const repo = process.env.GITHUB_ISSUES_REPO;
 
   if (!token || !repo) {
-    console.error('[submit-lead] GITHUB_TOKEN or GITHUB_ISSUES_REPO env var not set');
-    return res.status(500).json({ error: 'Server configuration error' });
+    const missing = [!token && 'GITHUB_TOKEN', !repo && 'GITHUB_ISSUES_REPO'].filter(Boolean).join(', ');
+    console.error('[submit-lead] Missing env vars:', missing);
+    return res.status(500).json({ error: `Config error: missing ${missing}` });
   }
 
   const cleanName = name.trim();
