@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>+Life — Personal Health OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────────────────── */
+:root{
+  --ink:#09090b;--ink2:#0f0f12;--ink3:#141418;
+  --paper:#f1ede6;--paper2:#e8e3da;
+  --gr:#39ff6e;--gr2:#27a855;
+  --gr-a:rgba(57,255,110,0.12);--gr-b:rgba(57,255,110,0.06);
+  --am:#f1c40f;--rd:#e74c3c;
+  --tx:#ededea;--tx2:#9a9691;--tx3:#6a6560;
+  --tx-lt:#1a1a1a;--tx2-lt:#555;--tx3-lt:#888;
+  --fd:'Playfair Display',Georgia,serif;
+  --fs:'DM Sans',system-ui,sans-serif;
+  --fm:'DM Mono','Courier New',monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ── RESET ───────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fs);background:var(--ink);color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
+img,svg{display:block}
+
+/* ── SURFACES ────────────────────────────────────────────────────────── */
+.dark{background:var(--ink);color:var(--tx)}
+.dark2{background:var(--ink2);color:var(--tx)}
+.light{background:var(--paper);color:var(--tx-lt)}
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────── */
+.section{padding:100px 52px}
+.section.hero-sec{padding:80px 52px 72px;position:relative;overflow:hidden}
+.section.big-stmt{padding:120px 52px;text-align:center}
+.section.cta-sec{padding:130px 52px;position:relative;overflow:hidden;text-align:center}
+.section.compact{padding:64px 52px}
+.wrap{max-width:1100px;margin:0 auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.g2.mid{align-items:center}
+.g2.flip{direction:rtl}.g2.flip>*{direction:ltr}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.18)}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.g2-sm{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.row{display:flex;align-items:center;gap:12px}
+.col{display:flex;flex-direction:column;gap:12px}
+.spacer{height:20px}
+.spacer-sm{height:12px}
+
+/* ── KICKER ──────────────────────────────────────────────────────────── */
+.kicker{
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;
+  font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3)
+}
+.kicker::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.1)}
+.light .kicker{color:var(--tx3-lt)}
+.light .kicker::after{background:rgba(0,0,0,0.15)}
+
+/* ── TYPOGRAPHY ──────────────────────────────────────────────────────── */
+.h1{font-family:var(--fd);font-size:clamp(44px,5.5vw,76px);line-height:.95;letter-spacing:-.02em;font-weight:400}
+.h2{font-family:var(--fd);font-size:clamp(30px,4vw,52px);line-height:1.08;font-weight:400}
+.h2-big{font-family:var(--fd);font-size:clamp(36px,5vw,68px);line-height:1.0;font-weight:400;text-align:center}
+.h2-cta{font-family:var(--fd);font-size:clamp(44px,6.5vw,88px);line-height:.93;letter-spacing:-.02em;font-weight:400}
+.h3{font-family:var(--fd);font-size:28px;line-height:1.15;font-weight:400}
+.h4{font-family:var(--fd);font-size:20px;line-height:1.2;font-weight:400}
+em{font-style:italic;color:var(--gr)}
+.light em{color:var(--gr2)}
+.card-dark em{color:var(--gr)}
+.lead{font-size:15px;line-height:1.75;color:var(--tx2);max-width:480px}
+.desc{font-size:14px;line-height:1.8;color:var(--tx2);max-width:500px}
+.body-sm{font-size:13px;line-height:1.65;color:var(--tx2)}
+.body-xs{font-size:12px;line-height:1.6;color:var(--tx2)}
+.light .desc,.light .lead,.light .body-sm,.light .body-xs{color:var(--tx2-lt)}
+.pull-quote{font-family:var(--fd);font-size:17px;font-style:italic;line-height:1.45}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────────── */
+.btn-p,.cta-p{
+  display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:#000;background:var(--gr);padding:14px 28px;border-radius:2px;cursor:pointer;border:none;
+  transition:opacity .3s,transform .3s var(--ease)
+}
+.btn-p:hover,.cta-p:hover{opacity:.88;transform:translateY(-2px)}
+.btn-ghost{
+  display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--tx2);background:transparent;padding:14px 28px;border:1px solid rgba(255,255,255,0.14);border-radius:2px;
+  cursor:pointer;transition:color .2s
+}
+.btn-ghost:hover{color:var(--tx)}
+.btn-lt{
+  display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:#fff;background:var(--gr2);padding:14px 28px;border-radius:2px;cursor:pointer;border:none;
+  transition:opacity .3s,transform .3s var(--ease)
+}
+.btn-lt:hover{opacity:.88;transform:translateY(-2px)}
+.btn-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:32px}
+
+/* ── NAV CTA ─────────────────────────────────────────────────────────── */
+.nav-cta{
+  display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:#000;background:var(--gr);padding:9px 22px;border-radius:2px;
+  transition:opacity .3s,transform .3s var(--ease)
+}
+.nav-cta:hover{opacity:.88;transform:translateY(-2px)}
+
+/* ── TAGS / BADGES / PILLS ───────────────────────────────────────────── */
+.tag{font-family:var(--fm);font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:2px}
+.tag-gr{background:var(--gr-a);color:var(--gr);border:1px solid rgba(57,255,110,0.2)}
+.tag-lt{background:rgba(255,255,255,0.05);color:var(--tx3)}
+.badge{font-family:var(--fm);font-size:7px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:2px}
+.badge-gr{background:rgba(57,255,110,0.14);color:var(--gr)}
+.badge-am{background:rgba(241,196,15,0.14);color:var(--am)}
+.badge-rd{background:rgba(231,76,60,0.14);color:var(--rd)}
+.pill{font-family:var(--fm);font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:100px}
+.pill-gr{background:var(--gr-a);color:var(--gr);border:1px solid rgba(57,255,110,0.2)}
+.pill-lt{background:rgba(255,255,255,0.05);color:var(--tx3)}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:16px}
+
+/* ── DATA-VIZ ────────────────────────────────────────────────────────── */
+.bar-wrap{display:flex;align-items:center;gap:8px}
+.bar-track{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;flex:1}
+.bar-fill{height:100%;border-radius:2px;transition:width .6s var(--ease)}
+.bar-fill.c-gr{background:var(--gr)}
+.bar-fill.c-am{background:var(--am)}
+.bar-fill.c-rd{background:var(--rd)}
+.bar-val{font-family:var(--fm);font-size:9px;color:var(--tx);width:22px;text-align:right;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.live-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;flex-shrink:0;animation:blink 2s infinite}
+.live-dot.inline{display:inline-block;vertical-align:middle;margin-right:5px}
+.score-ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:80px;height:80px;flex-shrink:0}
+.score-num{
+  position:absolute;font-family:var(--fd);font-size:28px;font-weight:400;color:var(--gr);
+  text-shadow:0 0 6px rgba(57,255,110,.7),0 0 14px rgba(57,255,110,.3)
+}
+.score-lbl{font-family:var(--fm);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-top:2px}
+.sleep-stack{display:flex;gap:1px;height:5px;border-radius:2px;overflow:hidden}
+.sl-deep{background:#3b82f6;flex:2}
+.sl-rem{background:#8b5cf6;flex:2.5}
+.sl-light{background:#6b7280;flex:3.5}
+.sleep-legend{display:flex;gap:10px;margin-top:6px}
+.sl-leg{font-family:var(--fm);font-size:7px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
+
+/* ── CARDS ───────────────────────────────────────────────────────────── */
+.card-dark{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:28px}
+.card-light{background:var(--paper2);border:1px solid #ddd8ce;border-radius:10px;padding:22px}
+.card-green{background:linear-gradient(135deg,#0f1a12,#0a1209);border:1px solid rgba(57,255,110,0.2);border-radius:12px;padding:28px}
+.card-red{background:linear-gradient(135deg,#120808,#1a0808);border:1px solid rgba(231,76,60,0.2);border-radius:12px;padding:28px}
+.card-white{background:#fff;border:1px solid #ddd8ce;border-radius:12px;padding:22px;position:relative}
+.card-white .fail-x{position:absolute;top:14px;right:14px;font-size:11px;color:var(--rd);font-family:var(--fm);letter-spacing:.06em}
+
+/* ── CHAT BUBBLES ────────────────────────────────────────────────────── */
+.chat-wrap{display:flex;flex-direction:column;gap:8px}
+.bubble-user{align-self:flex-end;max-width:82%;background:rgba(57,255,110,0.1);color:var(--gr);
+  padding:10px 14px;border-radius:10px 10px 2px 10px;font-size:12px;line-height:1.5}
+.bubble-ai{align-self:flex-start;max-width:88%;background:rgba(255,255,255,0.04);color:var(--tx);
+  padding:10px 14px;border-radius:2px 10px 10px 10px;font-size:12px;line-height:1.55}
+.bubble-ai strong{color:var(--gr)}
+.bubble-sys{text-align:center;font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--tx3);padding:6px 0}
+.debate-cardio{background:rgba(99,102,241,0.1);border-radius:2px 10px 10px 10px;padding:12px 16px;font-size:11px;line-height:1.55;color:var(--tx);margin-bottom:8px}
+.debate-gastro{background:rgba(251,146,60,0.1);border-radius:2px 10px 10px 10px;padding:12px 16px;font-size:11px;line-height:1.55;color:var(--tx);margin-bottom:8px}
+.debate-synth{background:rgba(57,255,110,0.08);border:1px solid rgba(57,255,110,0.2);border-radius:2px 10px 10px 10px;padding:12px 16px;font-size:11px;line-height:1.55;color:var(--tx)}
+.debate-label{font-family:var(--fm);font-size:7px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.lbl-cardio{color:#818cf8}
+.lbl-gastro{color:#fb923c}
+.lbl-synth{color:var(--gr)}
+.sys-event{text-align:center;font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gr);padding:6px 0}
+
+/* ── MARQUEE ─────────────────────────────────────────────────────────── */
+.marquee-sec{background:#111316;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:11px 0;overflow:hidden}
+.marquee-track{display:flex;width:max-content;animation:mq 24s linear infinite}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);padding:0 18px;white-space:nowrap}
+.marquee-sep{color:var(--gr);font-size:9px;padding:0 4px}
+
+/* ── NAV ─────────────────────────────────────────────────────────────── */
+nav{
+  background:var(--ink);border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:18px 52px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200
+}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-link{font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);transition:color .2s}
+.nav-link:hover{color:var(--tx)}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-word{font-family:var(--fs);font-size:18px;font-weight:500;color:var(--tx)}
+.logo-icon line{stroke:var(--gr)}
+
+/* ── HERO ────────────────────────────────────────────────────────────── */
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px)}
+.orb-g{width:520px;height:520px;background:rgba(20,52,32,0.7);top:-120px;right:-60px}
+.orb-b{width:420px;height:420px;background:rgba(14,35,50,0.45);bottom:-100px;left:-100px}
+
+/* ── DASHBOARD MOCK ──────────────────────────────────────────────────── */
+.dash-card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:24px}
+.dash-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.dash-title{font-family:var(--fm);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3)}
+.bio-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.bio-icon{width:14px;height:14px;flex-shrink:0;opacity:.5}
+.bio-name{font-family:var(--fm);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);width:68px;flex-shrink:0}
+.bio-val{font-family:var(--fm);font-size:9px;color:var(--tx);width:24px;text-align:right;flex-shrink:0}
+.score-span-row{display:flex;align-items:center;gap:20px;margin:14px 0 18px}
+.span-callout{font-family:var(--fd);font-size:36px;font-weight:400;color:var(--tx);text-shadow:0 0 20px rgba(255,255,255,0.25);line-height:1}
+.span-lbl{font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-top:4px}
+.ai-card{background:var(--gr-a);border:1px solid rgba(57,255,110,0.2);border-radius:8px;padding:12px 14px;margin-top:14px}
+.ai-lbl{font-family:var(--fm);font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--gr);margin-bottom:6px}
+.ai-txt{font-size:11px;line-height:1.6;color:var(--tx2)}
+.ai-txt strong{color:var(--gr)}
+
+/* ── PILLARS ─────────────────────────────────────────────────────────── */
+.pillar-cell{background:var(--ink2);padding:26px 22px;min-height:280px;display:flex;flex-direction:column;transition:background .25s}
+.pillar-cell:hover{background:var(--ink3)}
+.pillar-num{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:16px}
+.pillar-emoji{font-size:20px;margin-bottom:14px}
+.pillar-title{font-family:var(--fd);font-size:20px;line-height:1.2;font-weight:400;color:var(--tx);margin-bottom:10px}
+.pillar-desc{font-size:12px;color:var(--tx2);line-height:1.65;flex:1;padding-bottom:14px}
+
+/* ── CONSTELLATION BLOCK ─────────────────────────────────────────────── */
+.tick-rule{height:36px;background:var(--ink2);background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0.06) 0,rgba(255,255,255,0.06) 1px,transparent 1px,transparent 20%)}
+.const-block{background:linear-gradient(to bottom,var(--ink2),var(--ink));border-radius:0 0 12px 12px;overflow:hidden;height:480px;display:grid;grid-template-columns:1fr 1fr}
+.const-copy{padding:44px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.const-copy .h4{margin-bottom:8px}
+.green-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2)}
+.green-dot{width:6px;height:6px;background:var(--gr);border-radius:50%;flex-shrink:0}
+#constellationCanvas{width:100%;height:100%}
+
+/* ── FEATURE ROWS ────────────────────────────────────────────────────── */
+.feat-section-inner{border-top:1px solid rgba(255,255,255,0.06)}
+.feat-row{padding:60px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.feat-row.flip{direction:rtl}.feat-row.flip>*{direction:ltr}
+.feat-num{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:12px}
+.mock-card{background:var(--ink);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:20px}
+.mock-hdr{font-family:var(--fm);font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+
+/* ── EHR ─────────────────────────────────────────────────────────────── */
+.check-item{display:flex;gap:14px;margin-bottom:22px}
+.check-ico{width:20px;height:20px;border-radius:50%;background:var(--gr2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:10px;color:#fff}
+.check-title{font-size:13px;font-weight:500;color:var(--tx-lt);margin-bottom:3px}
+.provider-card{background:var(--ink2);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:20px}
+.provider-hdr{font-family:var(--fm);font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.prov-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.prov-row:last-child{border-bottom:none}
+.prov-logo{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.prov-name{font-size:12px;color:var(--tx);font-weight:500}
+.prov-meta{font-family:var(--fm);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);margin-top:2px}
+.enc-line{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px auto 0;width:fit-content}
+.enc-bar{width:1px;height:20px;background:rgba(57,255,110,0.3)}
+.enc-label{font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gr);padding:4px 0}
+
+/* ── REASONING CHAIN ─────────────────────────────────────────────────── */
+.r-step{display:flex;gap:14px;margin-bottom:18px}
+.r-num{font-family:var(--fm);font-size:9px;letter-spacing:.12em;color:var(--gr);width:22px;flex-shrink:0;padding-top:2px}
+.r-body{font-size:13px;color:var(--tx2);line-height:1.65}
+.r-body strong{color:var(--tx)}
+.r-arrow{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);padding-left:36px;margin-bottom:12px}
+
+/* ── AGENT CARDS ─────────────────────────────────────────────────────── */
+.agent-row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.agent-row:last-child{border-bottom:none}
+.agent-ico{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.agent-name{font-size:12px;color:var(--tx);font-weight:500;margin-bottom:2px}
+.agent-style{font-family:var(--fm);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--gr);margin-bottom:4px}
+.agent-desc{font-size:11px;color:var(--tx2);line-height:1.5}
+
+/* ── PASSPORT ────────────────────────────────────────────────────────── */
+.passport-hdr{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.pp-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px}
+.pp-row:last-child{border-bottom:none}
+.chip{font-family:var(--fm);font-size:7px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.chip-ok{background:rgba(57,255,110,0.14);color:var(--gr)}
+.chip-wt{background:rgba(241,196,15,0.14);color:var(--am)}
+.chip-ms{background:rgba(231,76,60,0.14);color:var(--rd)}
+
+/* ── REMINDERS ───────────────────────────────────────────────────────── */
+.rem-row{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:start}
+.rem-trigger{font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--rd);margin-top:2px}
+.rem-resp{font-size:12px;color:var(--tx2);line-height:1.6}
+
+/* ── COACHING ────────────────────────────────────────────────────────── */
+.coach-card{background:var(--ink2);border:1px solid rgba(255,255,255,0.09);border-radius:14px;overflow:hidden}
+.coach-hdr{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px}
+.coach-avatar{width:32px;height:32px;border-radius:50%;background:var(--gr-a);border:1px solid rgba(57,255,110,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.coach-name{font-size:12px;color:var(--tx);font-weight:500}
+.coach-status{font-family:var(--fm);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--gr)}
+.coach-msgs{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+
+/* ── QUOTE BLOCK ─────────────────────────────────────────────────────── */
+.quote-block{border-left:2px solid var(--gr2);padding-left:24px;max-width:580px}
+.dr-row{display:flex;align-items:center;gap:12px;margin-top:20px}
+.dr-avatar{width:36px;height:36px;border-radius:50%;background:var(--paper2);border:1px solid #ddd8ce;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:9px;letter-spacing:.1em;color:var(--tx3-lt);flex-shrink:0}
+.dr-name{font-size:12px;font-weight:500;color:var(--tx-lt)}
+.dr-role{font-family:var(--fm);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3-lt);margin-top:2px}
+
+/* ── ARROW ORNAMENT ──────────────────────────────────────────────────── */
+.arrow-orn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 0;color:var(--gr2)}
+.orn-line{width:1px;height:28px;background:linear-gradient(to bottom,transparent,var(--gr2),transparent)}
+.orn-lbl{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase}
+
+/* ── STORE BADGES ────────────────────────────────────────────────────── */
+.store-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:28px}
+.store-badge{background:#1c1c1e;border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:12px 18px;display:inline-flex;align-items:center;gap:10px}
+.store-ico{font-size:20px}
+.store-lbl{font-family:var(--fm);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3)}
+.store-name{font-size:13px;font-weight:500;color:var(--tx);font-family:var(--fs)}
+
+/* ── CANVAS ──────────────────────────────────────────────────────────── */
+#particleRing{position:absolute;inset:0;width:100%;height:100%;opacity:.7;pointer-events:none;z-index:0}
+.cta-content{position:relative;z-index:1}
+
+/* ── SCROLL-REVEAL ───────────────────────────────────────────────────── */
+.sr{opacity:0;transform:translateY(36px);transition:opacity .95s var(--ease),transform .95s var(--ease)}
+.sr.up{transform:translateY(56px)}
+.sr.left{transform:translateX(-44px)}
+.sr.right{transform:translateX(44px)}
+.sr.vis{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.18s}.d3{transition-delay:.28s}.d4{transition-delay:.38s}.d5{transition-delay:.48s}
+
+/* ── REDUCED MOTION ──────────────────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  .sr{opacity:1;transform:none;transition:none}
+  .marquee-track{animation:none}
+  .live-dot{animation:none}
+  #constellationCanvas,#particleRing{display:none}
+}
+
+/* ── FOOTER ──────────────────────────────────────────────────────────── */
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding:26px 52px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3)}
+.footer-links{display:flex;gap:24px}
+.footer-link{font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);transition:color .2s}
+.footer-link:hover{color:var(--tx2)}
+</style>
+</head>
+<body>
+
+<!-- ══ 1. NAV ══ -->
+<nav>
+  <a href="#" class="logo" aria-label="+Life home">
+    <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <defs>
+        <filter id="neon" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="1.2" result="b1"/>
+          <feGaussianBlur stdDeviation="3.5" result="b2"/>
+          <feGaussianBlur stdDeviation="7" result="b3"/>
+          <feMerge><feMergeNode in="b3"/><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#neon)" stroke-width="2.4" stroke-linecap="round">
+        <line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/>
+      </g>
+    </svg>
+    <span class="logo-word">Life</span>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="nav-link">Platform</a>
+    <a href="#" class="nav-link">Data sources</a>
+    <a href="#" class="nav-link">Pricing</a>
+    <a href="#" class="nav-cta" onclick="openLeadModal();return false;">Get early access</a>
+  </div>
+</nav>
+
+<!-- ══ 2. HERO ══ -->
+<section class="section hero-sec dark">
+  <div class="orb orb-g" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">Personal Health &amp; Wellbeing OS</div>
+      <h1 class="h1 sr d1">Your body<br>runs on <em>data</em>.<br>Now so do you.</h1>
+      <p class="lead sr d2" style="margin-top:24px">One intelligent OS that reads your labs, wearables, genes, and history — then reasons across all of it to give you insight no single app ever could.</p>
+      <div class="btn-row sr d3">
+        <a href="#" class="btn-p" onclick="openLeadModal();return false;">Start for free →</a>
+        <a href="#" class="btn-ghost">Watch demo</a>
+      </div>
+    </div>
+    <div class="sr d2 right">
+      <div class="dash-card">
+        <div class="dash-hdr">
+          <span class="dash-title">YOUR HEALTH OS · LIVE</span>
+          <span class="live-dot" aria-hidden="true"></span>
+        </div>
+        <div class="score-span-row">
+          <div class="score-ring-wrap">
+            <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="6"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#39ff6e" stroke-width="6"
+                stroke-dasharray="168 33" stroke-dashoffset="-25" stroke-linecap="round"
+                transform="rotate(-90 40 40)"/>
+            </svg>
+            <span class="score-num" aria-label="Health score 84">84</span>
+          </div>
+          <div>
+            <div class="span-callout">+5.2 yrs</div>
+            <div class="span-lbl">health span added</div>
+          </div>
+        </div>
+        <div class="bio-row">
+          <svg class="bio-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 14s-5-3.5-5-7a5 5 0 0110 0c0 3.5-5 7-5 7z"/></svg>
+          <span class="bio-name">Heart</span>
+          <div class="bar-track"><div class="bar-fill c-gr" style="width:88%"></div></div>
+          <span class="bio-val">88</span>
+        </div>
+        <div class="bio-row">
+          <svg class="bio-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5"/><path d="M8 5v3l2 2"/></svg>
+          <span class="bio-name">Metabolic</span>
+          <div class="bar-track"><div class="bar-fill c-am" style="width:70%"></div></div>
+          <span class="bio-val">70</span>
+        </div>
+        <div class="bio-row">
+          <svg class="bio-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3 13L8 3l5 10M5 9h6"/></svg>
+          <span class="bio-name">Longevity</span>
+          <div class="bar-track"><div class="bar-fill c-gr" style="width:82%"></div></div>
+          <span class="bio-val">82</span>
+        </div>
+        <div class="bio-row">
+          <svg class="bio-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="6" r="3"/><path d="M4 13c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg>
+          <span class="bio-name">Hormonal</span>
+          <div class="bar-track"><div class="bar-fill c-rd" style="width:56%"></div></div>
+          <span class="bio-val">56</span>
+        </div>
+        <div class="bio-row">
+          <svg class="bio-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 8c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M8 14V8"/></svg>
+          <span class="bio-name">Sleep</span>
+          <div class="bar-track"><div class="bar-fill c-gr" style="width:76%"></div></div>
+          <span class="bio-val">76</span>
+        </div>
+        <div class="bio-row">
+          <svg class="bio-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 4l-6 6-2-2"/><circle cx="8" cy="8" r="6"/></svg>
+          <span class="bio-name">Immune</span>
+          <div class="bar-track"><div class="bar-fill c-am" style="width:68%"></div></div>
+          <span class="bio-val">68</span>
+        </div>
+        <div class="ai-card">
+          <div class="ai-lbl">AI INSIGHT · TODAY</div>
+          <p class="ai-txt">Your hs-CRP dropped <strong>38%</strong> since adjusting omega-3. Cardiovascular inflammation trending <strong>optimal</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 3. MARQUEE ══ -->
+<div class="marquee-sec" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">Lab Results</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Oura Ring</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">WHOOP</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Garmin</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Apple Health</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">MyFitnessPal</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">23andMe</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">AncestryDNA</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Epic MyChart</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Quest Diagnostics</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">LabCorp</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Fitbit</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">CGM Data</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">DEXA Scan</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Withings</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Samsung Health</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Apple Watch</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">MRI Reports</span><span class="marquee-sep">✦</span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item">Lab Results</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Oura Ring</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">WHOOP</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Garmin</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Apple Health</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">MyFitnessPal</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">23andMe</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">AncestryDNA</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Epic MyChart</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Quest Diagnostics</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">LabCorp</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Fitbit</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">CGM Data</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">DEXA Scan</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Withings</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Samsung Health</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Apple Watch</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">MRI Reports</span><span class="marquee-sep">✦</span>
+  </div>
+</div>
+
+<!-- ══ 4. THE PROBLEM ══ -->
+<section class="section light">
+  <div class="wrap">
+    <div class="kicker sr">Why everything else fails</div>
+    <h2 class="h2 sr d1">Dozens of tools. They all failed<br>the <em>same</em> way.</h2>
+    <p class="desc sr d2" style="margin-top:18px;margin-bottom:40px">You've tried the tracking apps, the wearables, the wellness journals. Each shows a slice. None talk to each other. None reason. None know you.</p>
+    <div class="g4 sr d2">
+      <div class="card-white">
+        <span class="fail-x" aria-hidden="true">✕</span>
+        <div style="font-size:24px;margin-bottom:12px" aria-hidden="true">📊</div>
+        <div style="font-size:13px;font-weight:500;color:var(--tx-lt);margin-bottom:6px">Fitness apps</div>
+        <div class="body-xs">Track steps, miss the full metabolic picture entirely.</div>
+      </div>
+      <div class="card-white">
+        <span class="fail-x" aria-hidden="true">✕</span>
+        <div style="font-size:24px;margin-bottom:12px" aria-hidden="true">🩺</div>
+        <div style="font-size:13px;font-weight:500;color:var(--tx-lt);margin-bottom:6px">Annual checkups</div>
+        <div class="body-xs">A snapshot every 12 months. Never a trend. Never context.</div>
+      </div>
+      <div class="card-white">
+        <span class="fail-x" aria-hidden="true">✕</span>
+        <div style="font-size:24px;margin-bottom:12px" aria-hidden="true">💊</div>
+        <div style="font-size:13px;font-weight:500;color:var(--tx-lt);margin-bottom:6px">Supplement stacks</div>
+        <div class="body-xs">Chosen by hope, not by your actual biomarker gaps.</div>
+      </div>
+      <div class="card-white">
+        <span class="fail-x" aria-hidden="true">✕</span>
+        <div style="font-size:24px;margin-bottom:12px" aria-hidden="true">⌚</div>
+        <div style="font-size:13px;font-weight:500;color:var(--tx-lt);margin-bottom:6px">Wearables alone</div>
+        <div class="body-xs">Heart rate without clinical context means almost nothing.</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card-red sr d3">
+      <div style="font-size:20px;margin-bottom:10px" aria-hidden="true">⚠️</div>
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--rd);margin-bottom:10px">The real problem</div>
+      <h3 class="h3" style="color:var(--tx);margin-bottom:14px">Every tool lives in<br>a silo.</h3>
+      <p class="body-sm" style="color:var(--tx2)">No one connects the dots between your blood work, your sleep, your genome, and your gut. You're left to be your own researcher — without the tools to do it.</p>
+    </div>
+    <div class="arrow-orn sr">
+      <div class="orn-line" aria-hidden="true"></div>
+      <div class="orn-lbl">+Life solves this</div>
+      <div class="orn-line" aria-hidden="true"></div>
+    </div>
+    <div class="card-green sr d1">
+      <div style="font-size:20px;margin-bottom:10px" aria-hidden="true">✦</div>
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--gr);margin-bottom:10px">+Life</div>
+      <h3 class="h3" style="color:var(--tx);margin-bottom:14px">One system that holds<br>every signal.</h3>
+      <p class="body-sm" style="color:var(--tx2)">One system that holds every data source, cross-references every signal, and reasons across your entire biology — to give you insight no individual tool ever could.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 5. FIVE PILLARS ══ -->
+<section class="section dark">
+  <div class="wrap">
+    <div class="kicker sr">The five pillars</div>
+    <h2 class="h2 sr d1">One OS. Five streams of <em>truth</em><br>about your body.</h2>
+    <p class="desc sr d2" style="margin-top:18px;margin-bottom:40px">Every pillar feeds every other. The intelligence lives in the connections.</p>
+    <div class="g5 sr d2">
+      <div class="pillar-cell">
+        <div class="pillar-num">01</div>
+        <div class="pillar-emoji" aria-hidden="true">🩺</div>
+        <div class="pillar-title">Clinical <em>health</em></div>
+        <div class="pillar-desc">Full biomarker panel tracking — labs, imaging, vitals — with trend analysis and range context over time.</div>
+        <div class="tag-row">
+          <span class="tag tag-gr">Labs</span><span class="tag tag-lt">Imaging</span><span class="tag tag-lt">Vitals</span>
+        </div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-num">02</div>
+        <div class="pillar-emoji" aria-hidden="true">🌙</div>
+        <div class="pillar-title">Sleep &amp; <em>recovery</em></div>
+        <div class="pillar-desc">HRV, sleep stages, readiness scores — every night decoded and cross-referenced with your clinical markers.</div>
+        <div class="tag-row">
+          <span class="tag tag-gr">HRV</span><span class="tag tag-lt">Stages</span><span class="tag tag-lt">Readiness</span>
+        </div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-num">03</div>
+        <div class="pillar-emoji" aria-hidden="true">🥗</div>
+        <div class="pillar-title"><em>Fuel</em> intelligence</div>
+        <div class="pillar-desc">Macro tracking, micronutrient deficiencies, supplement stacking — all informed by your actual biomarkers.</div>
+        <div class="tag-row">
+          <span class="tag tag-gr">Macros</span><span class="tag tag-lt">Deficiencies</span><span class="tag tag-lt">Gut</span>
+        </div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-num">04</div>
+        <div class="pillar-emoji" aria-hidden="true">⚡</div>
+        <div class="pillar-title">Movement <em>science</em></div>
+        <div class="pillar-desc">VO₂ max, training load, recovery windows — performance data read in the context of your full health picture.</div>
+        <div class="tag-row">
+          <span class="tag tag-gr">VO₂ Max</span><span class="tag tag-lt">Load</span><span class="tag tag-lt">Recovery</span>
+        </div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-num">05</div>
+        <div class="pillar-emoji" aria-hidden="true">🧬</div>
+        <div class="pillar-title">Genetic <em>blueprint</em></div>
+        <div class="pillar-desc">SNPs, methylation pathways, disease risk variants — your genome as a permanent lens on every other data stream.</div>
+        <div class="tag-row">
+          <span class="tag tag-gr">SNPs</span><span class="tag tag-lt">Methylation</span><span class="tag tag-lt">Risks</span>
+        </div>
+      </div>
+    </div>
+    <div class="tick-rule sr"></div>
+    <div class="const-block sr d1">
+      <div class="const-copy">
+        <div class="h4">One <em>intelligent</em> OS</div>
+        <div class="green-row"><span class="green-dot" aria-hidden="true"></span>Cross-pillar correlations surfaced in real time</div>
+        <div class="green-row"><span class="green-dot" aria-hidden="true"></span>Actionable recommendations grounded in your data</div>
+        <div class="green-row"><span class="green-dot" aria-hidden="true"></span>Trend analysis across months and years</div>
+        <div class="green-row"><span class="green-dot" aria-hidden="true"></span>Proactive alerts before symptoms appear</div>
+      </div>
+      <canvas id="constellationCanvas" aria-label="Live cross-pillar biomarker map"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 6. FEATURE ROWS ══ -->
+<section class="section dark2">
+  <div class="wrap">
+    <div class="kicker sr">What you get</div>
+    <h2 class="h2 sr d1">Five pillars. One <em>complete</em> picture.</h2>
+    <div class="feat-section-inner" style="margin-top:48px">
+
+      <div class="feat-row sr">
+        <div>
+          <div class="feat-num">01 — Clinical health</div>
+          <h3 class="h3">Your labs <em>analyzed</em>,<br>not just reported.</h3>
+          <p class="body-sm" style="margin-top:14px">Every biomarker placed in the context of your age, sex, genetics, and history. Ranges adjusted. Trends flagged. Recommendations grounded in your full picture — not a generic lab reference sheet.</p>
+        </div>
+        <div>
+          <div class="mock-card">
+            <div class="mock-hdr">Biomarker overview · 24 tracked</div>
+            <div class="bio-row"><span class="bio-name">ApoB</span><div class="bar-track"><div class="bar-fill c-am" style="width:72%"></div></div><span class="bio-val">72</span><span class="badge badge-am">Watch</span></div>
+            <div class="bio-row"><span class="bio-name">hs-CRP</span><div class="bar-track"><div class="bar-fill c-gr" style="width:88%"></div></div><span class="bio-val">88</span><span class="badge badge-gr">Optimal</span></div>
+            <div class="bio-row"><span class="bio-name">HbA1c</span><div class="bar-track"><div class="bar-fill c-gr" style="width:84%"></div></div><span class="bio-val">84</span><span class="badge badge-gr">Good</span></div>
+            <div class="bio-row"><span class="bio-name">Ferritin</span><div class="bar-track"><div class="bar-fill c-rd" style="width:42%"></div></div><span class="bio-val">42</span><span class="badge badge-rd">Low</span></div>
+            <div class="bio-row"><span class="bio-name">Vitamin D</span><div class="bar-track"><div class="bar-fill c-am" style="width:61%"></div></div><span class="bio-val">61</span><span class="badge badge-am">Watch</span></div>
+            <div class="bio-row"><span class="bio-name">Testosterone</span><div class="bar-track"><div class="bar-fill c-gr" style="width:79%"></div></div><span class="bio-val">79</span><span class="badge badge-gr">Good</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-row flip sr">
+        <div>
+          <div class="feat-num">02 — Sleep &amp; recovery</div>
+          <h3 class="h3">Every night, <em>decoded</em><br>for you.</h3>
+          <p class="body-sm" style="margin-top:14px">Deep sleep duration, REM cycles, HRV trends, readiness scores — all cross-referenced with your clinical markers and lifestyle data to give you a recovery picture that actually means something.</p>
+        </div>
+        <div>
+          <div class="mock-card">
+            <div class="mock-hdr">Last night · 7h 42m</div>
+            <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
+              <div class="score-ring-wrap" style="width:60px;height:60px">
+                <svg width="60" height="60" viewBox="0 0 60 60" aria-hidden="true">
+                  <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="5"/>
+                  <circle cx="30" cy="30" r="24" fill="none" stroke="#39ff6e" stroke-width="5" stroke-dasharray="120 31" stroke-dashoffset="-18" stroke-linecap="round" transform="rotate(-90 30 30)"/>
+                </svg>
+                <span class="score-num" style="font-size:18px" aria-label="Sleep score 78">78</span>
+              </div>
+              <div>
+                <div style="font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3)">Sleep score</div>
+                <div style="font-size:20px;font-family:var(--fd);color:var(--tx);margin:2px 0">78<span style="font-size:13px;color:var(--gr);font-family:var(--fd);font-style:italic"> +6</span></div>
+                <div style="font-family:var(--fm);font-size:7px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)">vs last week</div>
+              </div>
+            </div>
+            <div class="sleep-stack" style="height:6px;border-radius:2px">
+              <div class="sl-deep"></div><div class="sl-rem"></div><div class="sl-light"></div>
+            </div>
+            <div class="sleep-legend" style="margin-bottom:14px">
+              <span class="sl-leg" style="color:#3b82f6">Deep 1h 22m</span>
+              <span class="sl-leg" style="color:#8b5cf6">REM 1h 48m</span>
+              <span class="sl-leg" style="color:#6b7280">Light 4h 32m</span>
+            </div>
+            <div class="bio-row"><span class="bio-name">HRV</span><div class="bar-track"><div class="bar-fill c-gr" style="width:74%"></div></div><span class="bio-val">62ms</span></div>
+            <div class="bio-row"><span class="bio-name">Readiness</span><div class="bar-track"><div class="bar-fill c-gr" style="width:81%"></div></div><span class="bio-val">81</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-row sr">
+        <div>
+          <div class="feat-num">03 — Nutrition &amp; supplements</div>
+          <h3 class="h3">Fuel your body<br>with <em>precision</em>.</h3>
+          <p class="body-sm" style="margin-top:14px">Your macros, micronutrients, and supplement stack — assessed against your actual biomarker gaps, not generic RDAs. Know what you're missing and exactly how to fill it.</p>
+        </div>
+        <div>
+          <div class="mock-card">
+            <div class="mock-hdr">Today · Nutrition snapshot</div>
+            <div class="bio-row"><span class="bio-name">Protein</span><div class="bar-track"><div class="bar-fill c-gr" style="width:87%"></div></div><span class="bio-val">174g</span></div>
+            <div class="bio-row"><span class="bio-name">Omega-3</span><div class="bar-track"><div class="bar-fill c-am" style="width:58%"></div></div><span class="bio-val">1.2g</span></div>
+            <div class="bio-row"><span class="bio-name">Fiber</span><div class="bar-track"><div class="bar-fill c-gr" style="width:76%"></div></div><span class="bio-val">29g</span></div>
+            <div class="bio-row"><span class="bio-name">Magnesium</span><div class="bar-track"><div class="bar-fill c-rd" style="width:44%"></div></div><span class="bio-val">Low</span></div>
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)">
+              <div class="mock-hdr" style="margin-bottom:8px">Supplements · 3 active</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <span class="tag tag-gr">Magnesium 400mg</span>
+                <span class="tag tag-gr">Omega-3 2g</span>
+                <span class="tag tag-lt">Vitamin D 4000 IU</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-row flip sr">
+        <div>
+          <div class="feat-num">04 — AI cross-pillar reasoning</div>
+          <h3 class="h3">Ask anything about<br>your <em>biology</em>.</h3>
+          <p class="body-sm" style="margin-top:14px">A health assistant that has read every data point you've ever generated. Ask why your energy is low. Ask what's driving your poor sleep. It reasons across pillars to answer with evidence from your own data.</p>
+        </div>
+        <div>
+          <div class="mock-card">
+            <div class="mock-hdr">AI health assistant</div>
+            <div class="chat-wrap">
+              <div class="bubble-user">Why is my energy so low this week?</div>
+              <div class="bubble-ai">Three signals converged this week. Your <strong>ferritin dropped to 42</strong> — borderline low for your activity level. Your <strong>deep sleep fell 18%</strong> (only 52 min avg vs your 68 min baseline). And your <strong>training load</strong> was 34% above your 4-week average.<br><br>Together: iron-limited oxygen delivery + insufficient recovery. Recommend: prioritise sleep, reduce intensity 2–3 days.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ 7. EHR CONNECT ══ -->
+<section class="section light">
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">Medical records</div>
+      <h2 class="h2 sr d1">Connect your records once.<br><em>Done</em> forever.</h2>
+      <p class="desc sr d2" style="margin-top:18px;margin-bottom:32px">Your full medical history — from every hospital, every clinic, every lab — pulled in automatically and parsed by AI. No PDFs. No manual entry. Just your data, complete.</p>
+      <div class="sr d3">
+        <div class="check-item">
+          <div class="check-ico" aria-hidden="true">✓</div>
+          <div>
+            <div class="check-title">FHIR standard</div>
+            <div class="body-xs">Connects directly to your hospital via secure FHIR API — no downloads, no uploads.</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-ico" aria-hidden="true">✓</div>
+          <div>
+            <div class="check-title">Apple Health Records</div>
+            <div class="body-xs">Pulls your full medical history from Apple's Health Records integration in one tap.</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-ico" aria-hidden="true">✓</div>
+          <div>
+            <div class="check-title">Photo &amp; PDF import</div>
+            <div class="body-xs">Snap a photo of any lab report or DICOM file — AI parses and structures it instantly.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sr d2 right">
+      <div class="provider-card">
+        <div class="provider-hdr">Connected providers</div>
+        <div class="prov-row">
+          <div class="prov-logo" style="background:#e03a3a" aria-hidden="true">E</div>
+          <div style="flex:1">
+            <div class="prov-name">Epic MyChart</div>
+            <div class="prov-meta">Hospital EHR · FHIR R4</div>
+          </div>
+          <span class="pill pill-gr">Synced</span>
+        </div>
+        <div class="prov-row">
+          <div class="prov-logo" style="background:linear-gradient(135deg,#f97316,#ec4899)" aria-hidden="true">A</div>
+          <div style="flex:1">
+            <div class="prov-name">Apple Health Records</div>
+            <div class="prov-meta">iOS · HealthKit</div>
+          </div>
+          <span class="pill pill-gr">Synced</span>
+        </div>
+        <div class="prov-row">
+          <div class="prov-logo" style="background:#0d9488" aria-hidden="true">b</div>
+          <div style="flex:1">
+            <div class="prov-name">b.well Connected Health</div>
+            <div class="prov-meta">Aggregated records</div>
+          </div>
+          <span class="pill pill-gr">Synced</span>
+        </div>
+        <div class="prov-row">
+          <div class="prov-logo" style="background:#374151" aria-hidden="true">O</div>
+          <div style="flex:1">
+            <div class="prov-name">Oracle Health</div>
+            <div class="prov-meta">Enterprise EHR</div>
+          </div>
+          <span class="pill pill-lt">Connect</span>
+        </div>
+        <div class="enc-line">
+          <div class="enc-bar"></div>
+          <div class="enc-label">Encrypted · Auto-parsed</div>
+          <div class="enc-bar"></div>
+        </div>
+        <div class="card-green" style="margin-top:0;text-align:center;padding:16px">
+          <div style="font-family:var(--fm);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--gr);margin-bottom:6px">Your health OS</div>
+          <div style="font-size:13px;color:var(--tx2)">All records unified, reasoned, alive.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 8. VOICE INPUT ══ -->
+<section class="section dark">
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">Voice logging</div>
+      <h2 class="h2 sr d1">Log anything in<br><em>seconds</em>, hands-free.</h2>
+      <p class="desc sr d2" style="margin-top:18px">No forms. No tapping. Just speak. +Life parses your meal, your workout, your symptoms, your mood — and files it against all your other data automatically.</p>
+    </div>
+    <div class="sr d2 right">
+      <div class="mock-card">
+        <div class="mock-hdr">Voice log · just now</div>
+        <div class="chat-wrap">
+          <div class="bubble-sys">🎙 Listening…</div>
+          <div class="bubble-user">"Had salmon and quinoa for lunch, hit a 45-minute run at zone 2, feeling a bit foggy this afternoon."</div>
+          <div class="bubble-sys">Processing…</div>
+          <div class="bubble-ai"><strong>Logged:</strong><br>🥗 Meal — Salmon (32g protein, omega-3 ~2.1g), quinoa (42g carbs, 4g fiber)<br>⚡ Run — 45 min, Zone 2 estimated HR 128–142 bpm<br>🧠 Symptom — Cognitive fog, 2:30 pm<br><br>Noted: fog may correlate with <strong>post-meal glucose spike</strong>. CGM confirms +24 mg/dL at 1:45 pm.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 9. INSIGHT + REASONING ══ -->
+<section class="section dark">
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">How it thinks</div>
+      <h2 class="h2 sr d1">AI that <em>reasons</em><br>across your whole picture.</h2>
+      <p class="desc sr d2" style="margin-top:18px">Not keyword matching. Not generic advice. A multi-step chain of evidence from your actual data — reasoned the way a great clinician would, if they had access to everything.</p>
+    </div>
+    <div class="sr d2 right">
+      <div class="mock-card">
+        <div class="mock-hdr">Reasoning chain · fatigue investigation</div>
+        <div class="r-step">
+          <div class="r-num">01</div>
+          <div class="r-body"><strong>Ferritin 42 ng/mL</strong> — borderline low. At your activity level (&gt;8h training/week), optimal is 70–100 ng/mL. Iron-limited oxygen delivery is plausible.</div>
+        </div>
+        <div class="r-step">
+          <div class="r-num">02</div>
+          <div class="r-body"><strong>HRV dropped 14%</strong> over 10 days (62ms → 53ms). Concurrent with training load spike (+34% week-on-week). Systemic stress, insufficient recovery.</div>
+        </div>
+        <div class="r-step">
+          <div class="r-num">03</div>
+          <div class="r-body"><strong>Deep sleep 52 min/night</strong> avg this week vs 68 min baseline. Growth hormone secretion reduced. Cellular repair impaired. Fatigue compounds.</div>
+        </div>
+        <div class="r-step">
+          <div class="r-num">04</div>
+          <div class="r-body"><strong>MTHFR C677T variant detected</strong> — reduces methylation efficiency. Combined with low folate (intake 210 mcg vs 400 mcg recommended), energy metabolism further compromised.</div>
+        </div>
+        <div class="r-arrow">→ Primary recommendation</div>
+        <div class="card-green" style="padding:16px">
+          <div class="body-xs" style="color:var(--tx2)">Increase iron-rich foods + consider bisglycinate supplement. Reduce training load 20% for 7 days. Prioritise 8h sleep. Add methylfolate 400 mcg.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 10. AI COUNCIL ══ -->
+<section class="section dark">
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">AI council</div>
+      <h2 class="h2 sr d1">An AI council<br>of <em>specialists</em>.</h2>
+      <p class="desc sr d2" style="margin-top:18px;margin-bottom:28px">Competing hypotheses. Cross-disciplinary debate. A synthesis that doesn't paper over disagreements — it surfaces them so you and your doctor can make the best call.</p>
+      <div class="sr d3">
+        <div class="agent-row">
+          <div class="agent-ico" style="background:rgba(99,102,241,0.15)" aria-hidden="true">❤️</div>
+          <div>
+            <div class="agent-name">Cardiology Agent</div>
+            <div class="agent-style">Evidence-first · Conservative</div>
+            <div class="agent-desc">Focuses on cardiovascular risk markers, lipid panels, blood pressure trends, and long-term heart health trajectories.</div>
+          </div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-ico" style="background:rgba(251,146,60,0.15)" aria-hidden="true">⚗️</div>
+          <div>
+            <div class="agent-name">Endocrinology Agent</div>
+            <div class="agent-style">Systems-thinking · Hormonal</div>
+            <div class="agent-desc">Specialises in hormonal axes, thyroid, adrenal, metabolic syndrome, and the interplay between sleep, stress, and hormone regulation.</div>
+          </div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-ico" style="background:rgba(57,255,110,0.1)" aria-hidden="true">🧬</div>
+          <div>
+            <div class="agent-name">Genomics Agent</div>
+            <div class="agent-style">Personalisation · Variants</div>
+            <div class="agent-desc">Interprets genetic variants and how they modify standard clinical guidelines — drug metabolism, nutrient requirements, disease susceptibility.</div>
+          </div>
+        </div>
+        <div class="agent-row">
+          <div class="agent-ico" style="background:rgba(77,212,255,0.1)" aria-hidden="true">🥗</div>
+          <div>
+            <div class="agent-name">Gastroenterology Agent</div>
+            <div class="agent-style">Functional · Microbiome</div>
+            <div class="agent-desc">Examines gut health, microbiome composition, nutrient absorption, and the gut–brain–immune axis.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sr d2 right">
+      <div class="mock-card">
+        <div class="mock-hdr">AI council debate · ApoB management</div>
+        <div class="debate-cardio">
+          <div class="debate-label lbl-cardio">Cardiology · 09:14</div>
+          ApoB at 112 mg/dL is above the &lt;90 threshold I'd target for your risk profile. I'd consider a statin discussion at the next visit regardless of LDL particle size.
+        </div>
+        <div class="debate-gastro">
+          <div class="debate-label lbl-gastro">Gastroenterology · 09:15</div>
+          Worth noting: microbiome analysis shows low <em>Akkermansia</em> and elevated TMAO precursors. Dietary intervention may move ApoB meaningfully before pharmacology is needed.
+        </div>
+        <div class="debate-synth">
+          <div class="debate-label lbl-synth">AI Synthesis · 09:16</div>
+          Both agents agree ApoB warrants attention. Genomics (PCSK9 variant: low-effect) and Cardiology converge on a 90-day dietary-first approach: reduce saturated fat, increase soluble fiber, re-test. Escalation pathway documented if ApoB remains &gt;100 at follow-up.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 11. HEALTH PASSPORT ══ -->
+<section class="section light">
+  <div class="wrap">
+    <div class="kicker sr">Health passport</div>
+    <h2 class="h2 sr d1" style="margin-bottom:14px">Your complete health <em>record</em>,<br>always ready.</h2>
+    <p class="desc sr d2" style="margin-bottom:40px">One document that travels with you. Share it with any doctor, specialist, or insurer — in seconds, with the level of detail you choose.</p>
+    <div class="g2-sm sr d2">
+      <div class="card-light">
+        <div class="passport-hdr" style="color:var(--tx-lt);border-bottom-color:#ddd8ce">Standard view</div>
+        <div class="pp-row" style="border-bottom-color:#ddd8ce;color:var(--tx-lt)"><span>Blood panel (Jun 2025)</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="border-bottom-color:#ddd8ce;color:var(--tx-lt)"><span>Lipid profile</span><span class="chip chip-wt">Watch</span></div>
+        <div class="pp-row" style="border-bottom-color:#ddd8ce;color:var(--tx-lt)"><span>Thyroid (TSH/T4)</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="border-bottom-color:#ddd8ce;color:var(--tx-lt)"><span>Metabolic panel</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="border-bottom-color:#ddd8ce;color:var(--tx-lt)"><span>Genetic risk report</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="color:var(--tx-lt)"><span>Colonoscopy</span><span class="chip chip-ms">Missing</span></div>
+      </div>
+      <div class="card-green">
+        <div class="passport-hdr" style="color:var(--tx);border-bottom-color:rgba(57,255,110,0.15)">Complete view</div>
+        <div class="pp-row" style="border-bottom-color:rgba(255,255,255,0.06);color:var(--tx)"><span>Blood panel (Jun 2025)</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="border-bottom-color:rgba(255,255,255,0.06);color:var(--tx)"><span>Lipid + ApoB</span><span class="chip chip-wt">Watch</span></div>
+        <div class="pp-row" style="border-bottom-color:rgba(255,255,255,0.06);color:var(--tx)"><span>Thyroid full panel</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="border-bottom-color:rgba(255,255,255,0.06);color:var(--tx)"><span>Metabolic + insulin</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="border-bottom-color:rgba(255,255,255,0.06);color:var(--tx)"><span>Whole genome SNPs</span><span class="chip chip-ok">OK</span></div>
+        <div class="pp-row" style="color:var(--tx)"><span>Colonoscopy</span><span class="chip chip-ms">Missing</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 12. VISIT PREP ══ -->
+<section class="section light">
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">Visit prep</div>
+      <h2 class="h2 sr d1">Walk into every appointment <em>prepared</em>.</h2>
+      <p class="desc sr d2" style="margin-top:18px">+Life generates a pre-appointment brief your doctor can read in 90 seconds — your trends, your questions, your anomalies, your context. Make every 15-minute slot count.</p>
+    </div>
+    <div class="sr d2 right">
+      <div class="card-light" style="background:#fff">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3-lt);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8e3da">Pre-appointment brief · Dr. Sarah Chen</div>
+        <div style="font-size:11px;font-weight:500;color:var(--tx-lt);margin-bottom:8px;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase">Since last visit (90 days)</div>
+        <div style="font-size:12px;color:var(--tx2-lt);line-height:1.65;margin-bottom:14px">
+          • ApoB ↑ from 98 → 112 mg/dL. Trending up over 3 panels.<br>
+          • Ferritin ↓ to 42 ng/mL. Low for training volume.<br>
+          • Sleep HRV trending down 8% over 6 weeks.<br>
+          • Vitamin D stable at 54 ng/mL. Supplementing 4,000 IU.
+        </div>
+        <div style="font-size:11px;font-weight:500;color:var(--tx-lt);margin-bottom:8px;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase">Questions for doctor</div>
+        <div style="font-size:12px;color:var(--tx2-lt);line-height:1.65">
+          • Should we investigate ApoB further with a CAC scan?<br>
+          • Is iron supplementation appropriate given ferritin trend?<br>
+          • Any concern with the MTHFR C677T variant and current folate?
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 13. REMINDERS ══ -->
+<section class="section dark">
+  <div class="wrap">
+    <div class="kicker sr">Adaptive reminders</div>
+    <h2 class="h2 sr d1">Reminders that adapt<br>to your <em>life</em>.</h2>
+    <p class="desc sr d2" style="margin-top:18px;margin-bottom:40px">Not push notifications. Contextual interventions — rewritten in real time as your schedule, your data, and your body change.</p>
+    <div class="sr d2">
+      <div class="rem-row">
+        <div class="rem-trigger">Travel detected</div>
+        <div class="rem-resp">Your magnesium and omega-3 stock runs out in 3 days. You land in Berlin on Thursday — local pharmacy options identified. Reorder link ready.</div>
+      </div>
+      <div class="rem-row">
+        <div class="rem-trigger">HRV drop detected</div>
+        <div class="rem-resp">Your HRV is 18% below baseline this morning. Today's planned interval session has been rescheduled to a 40-min Zone 2 walk. Sleep priority tonight flagged.</div>
+      </div>
+      <div class="rem-row">
+        <div class="rem-trigger">Lab results in</div>
+        <div class="rem-resp">Your June panel is back. 3 markers changed meaningfully: ferritin ↓, ApoB ↑, Vitamin D stable. Full analysis ready. Pre-appointment brief updated for your July 12 visit.</div>
+      </div>
+      <div class="rem-row">
+        <div class="rem-trigger">Meal pattern shift</div>
+        <div class="rem-resp">You haven't logged lunch in 4 days. Your protein target is averaging 68g (target: 150g). CGM shows elevated 3pm cortisol spikes consistent with underfuelling.</div>
+      </div>
+      <div class="rem-row">
+        <div class="rem-trigger">Appointment tomorrow</div>
+        <div class="rem-resp">Your cardiology follow-up is at 10am. Pre-brief sent to Dr. Patel's portal. 3 questions prepared. Latest ApoB and lipid data synced. Leave 15 minutes early — traffic flagged.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 14. COACHING ══ -->
+<section class="section dark">
+  <div class="wrap g2 mid">
+    <div>
+      <div class="kicker sr">Health coaching</div>
+      <h2 class="h2 sr d1">Your AI coach,<br><em>always on</em>.</h2>
+      <p class="desc sr d2" style="margin-top:18px">A coach who knows your labs, your genome, your sleep, your training — and meets you where you are each day. No generic plans. No upsells. Just reasoning anchored in your data.</p>
+    </div>
+    <div class="sr d2 right">
+      <div class="coach-card">
+        <div class="coach-hdr">
+          <div class="coach-avatar" aria-hidden="true">✦</div>
+          <div>
+            <div class="coach-name">+Life Coach</div>
+            <div class="coach-status">Online · Data synced 3 min ago</div>
+          </div>
+        </div>
+        <div class="coach-msgs">
+          <div class="sys-event">SUPPLEMENTS LOGGED · 7:42 AM</div>
+          <div class="bubble-ai">Good morning. Your HRV recovered to 68ms overnight — solid rebound after yesterday's hard session. <strong>Ferritin note:</strong> your iron supplement absorption is best 1h post-workout. Did you take it before or after?</div>
+          <div class="bubble-user">After, I think. Does it matter?</div>
+          <div class="bubble-ai">It does for you specifically. Your <strong>TMPRSS6 variant</strong> reduces hepcidin suppression after exercise — meaning the 1h post-workout window gives you a ~28% better absorption window. Worth building the habit.</div>
+          <div class="sys-event">WORKOUT COMPLETED · 6:54 AM · 52 MIN ZONE 2</div>
+          <div class="bubble-user">What should I focus on this week given the fatigue?</div>
+          <div class="bubble-ai">Three priorities this week: <strong>1</strong> Sleep ≥7h 30m nightly — non-negotiable for your HRV recovery. <strong>2</strong> Daily iron supplement post-workout. <strong>3</strong> Keep training load below 420 ATL points. You're at 387 now — you have margin for one moderate session.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 15. PHYSICIAN COLLABORATION ══ -->
+<section class="section light compact">
+  <div class="wrap">
+    <div class="kicker sr">Clinical perspective</div>
+    <div class="g2 mid sr d1" style="gap:80px">
+      <div class="quote-block">
+        <p class="pull-quote">"The patients who come in with +Life briefings are a different category. They know their trends, they've thought about the questions. We accomplish in one appointment what used to take three."</p>
+        <div class="dr-row">
+          <div class="dr-avatar" aria-hidden="true">DR</div>
+          <div>
+            <div class="dr-name">Dr. Yuki Tanaka, MD</div>
+            <div class="dr-role">Preventive Medicine · Stanford-affiliated · 14 years</div>
+          </div>
+        </div>
+      </div>
+      <div class="col" style="gap:20px">
+        <div class="card-light" style="background:#fff">
+          <div style="font-family:var(--fm);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3-lt);margin-bottom:8px">Clinician benefits</div>
+          <div style="font-size:12px;color:var(--tx2-lt);line-height:1.7">
+            • Pre-visit brief with relevant trends pre-loaded<br>
+            • Longitudinal data across labs, wearables, lifestyle<br>
+            • Genetic context surfaced for pharmacogenomics<br>
+            • Patient arrives with informed, specific questions
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 16. BIG STATEMENT ══ -->
+<section class="section big-stmt light">
+  <div class="wrap">
+    <div class="kicker sr" style="justify-content:center;max-width:400px;margin:0 auto 32px">The full picture</div>
+    <h2 class="h2-big sr d1">No single app sees<br>the whole picture.<br><em>+Life</em> does.</h2>
+    <p class="sr d2" style="font-size:15px;line-height:1.75;color:var(--tx2-lt);max-width:480px;margin:28px auto 0">Your labs, your sleep, your movement, your genome, your nutrition — unified into one continuously-reasoning system. This is what understanding your health actually looks like.</p>
+  </div>
+</section>
+
+<!-- ══ 17. BOTTOM CTA ══ -->
+<section class="section cta-sec dark">
+  <canvas id="particleRing" aria-hidden="true"></canvas>
+  <div class="cta-content wrap">
+    <div class="kicker sr" style="justify-content:center;max-width:400px;margin:0 auto 24px">Your personal health OS</div>
+    <h2 class="h2-cta sr d1">Own your <em>biology</em>.</h2>
+    <p class="lead sr d2" style="margin:20px auto 0;text-align:center">Join the waitlist. Be among the first to experience<br>a health OS built around your actual biology.</p>
+    <div class="btn-row sr d3" style="justify-content:center">
+      <a href="#" class="cta-p" onclick="openLeadModal();return false;">Get early access →</a>
+      <a href="#" class="btn-ghost">Watch demo</a>
+    </div>
+    <div class="store-row sr d4">
+      <div class="store-badge" role="button" tabindex="0" aria-label="Download on App Store (coming soon)">
+        <span class="store-ico" aria-hidden="true">🍎</span>
+        <div>
+          <div class="store-lbl">Download on the</div>
+          <div class="store-name">App Store</div>
+        </div>
+      </div>
+      <div class="store-badge" role="button" tabindex="0" aria-label="Get it on Google Play (coming soon)">
+        <span class="store-ico" aria-hidden="true">▶</span>
+        <div>
+          <div class="store-lbl">Get it on</div>
+          <div class="store-name">Google Play</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 18. FOOTER ══ -->
+<footer>
+  <div class="footer-copy">
+    <a href="#" class="logo" style="gap:6px;display:inline-flex;align-items:center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <g filter="url(#neon)" stroke-width="2.4" stroke-linecap="round">
+          <line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/>
+          <line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/>
+        </g>
+      </svg>
+      <span class="logo-word" style="font-size:14px">Life</span>
+    </a>
+    &nbsp;&nbsp;© 2025 +Life. All rights reserved.
+  </div>
+  <div class="footer-links">
+    <a href="#" class="footer-link">Privacy</a>
+    <a href="#" class="footer-link">Terms</a>
+    <a href="#" class="footer-link">Contact</a>
+    <a href="#" class="footer-link">About</a>
+    <a href="#" class="footer-link">Status</a>
+  </div>
+</footer>
+
+<!-- ══ SCRIPTS ══ -->
+<script>
+/* Scroll-reveal IntersectionObserver */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('vis');});
+  },{threshold:0.1});
+  document.querySelectorAll('.sr').forEach(function(el){io.observe(el);});
+})();
+</script>
+
+<script>
+/* Constellation canvas */
+(function(){
+  var canvas=document.getElementById('constellationCanvas');
+  if(!canvas)return;
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  var ctx=canvas.getContext('2d');
+  var raf=null,visible=false;
+  var PC=['#ff6b6b','#4dd4ff','#39ff6e','#ffa53b','#c084fc'];
+  var PG=['rgba(255,107,107,','rgba(77,212,255,','rgba(57,255,110,','rgba(255,165,59,','rgba(192,132,252,'];
+  var ND=[
+    {l:'ApoB',p:0},{l:'LDL',p:0},{l:'HDL',p:0},{l:'Triglycerides',p:0},{l:'hs-CRP',p:0},
+    {l:'HbA1c',p:0},{l:'Ferritin',p:0},{l:'Cortisol',p:0},{l:'TSH',p:0},{l:'Insulin',p:0},
+    {l:'Vitamin D',p:0},{l:'Homocysteine',p:0},{l:'eGFR',p:0},{l:'ALT',p:0},{l:'Testosterone',p:0},
+    {l:'Uric Acid',p:0},{l:'DHEA-S',p:0},{l:'IGF-1',p:0},{l:'Fibrinogen',p:0},
+    {l:'HRV',p:1},{l:'Deep Sleep',p:1},{l:'REM',p:1},{l:'Sleep Score',p:1},{l:'Readiness',p:1},
+    {l:'Recovery',p:1},{l:'SpO2',p:1},{l:'Resting HR',p:1},{l:'Skin Temp',p:1},{l:'Stress Score',p:1},
+    {l:'Sleep Debt',p:1},{l:'Latency',p:1},
+    {l:'Omega-3',p:2},{l:'B12',p:2},{l:'Folate',p:2},{l:'Magnesium',p:2},{l:'Zinc',p:2},
+    {l:'Iron',p:2},{l:'Protein',p:2},{l:'Fiber',p:2},{l:'Vitamin K',p:2},{l:'Calcium',p:2},
+    {l:'Glucose',p:2},{l:'Selenium',p:2},{l:'Potassium',p:2},{l:'Hydration',p:2},
+    {l:'VO₂ max',p:3},{l:'Training Load',p:3},{l:'Steps',p:3},{l:'Active Energy',p:3},
+    {l:'Lactate',p:3},{l:'Power Output',p:3},{l:'RMSSD',p:3},{l:'Zone 2 Min',p:3},
+    {l:'Cardio Fitness',p:3},{l:'HR Zones',p:3},{l:'Sprint Speed',p:3},
+    {l:'MTHFR',p:4},{l:'ApoE',p:4},{l:'COMT',p:4},{l:'BDNF',p:4},{l:'TCF7L2',p:4},
+    {l:'ACE',p:4},{l:'VDR',p:4},{l:'FTO',p:4},{l:'PCSK9',p:4},{l:'CYP1A2',p:4},
+    {l:'IL-6',p:4},{l:'SLCO1B1',p:4}
+  ];
+  var nodes=[],edges=[];
+
+  function init(){
+    var r=canvas.parentElement.getBoundingClientRect();
+    canvas.width=r.width;canvas.height=r.height;
+    var W=canvas.width,H=canvas.height;
+    nodes=ND.map(function(n){
+      var zw=W/5,zx=n.p*zw;
+      return{x:zx+12+Math.random()*(zw-24),y:20+Math.random()*(H-80),
+        vx:(Math.random()-.5)*.24,vy:(Math.random()-.5)*.24,
+        p:n.p,ph:Math.random()*Math.PI*2,l:n.l,r:2.5+Math.random()*1.5};
+    });
+    edges=[];
+    var set=new Set(),tries=0;
+    while(edges.length<150&&tries<3000){
+      var a=Math.floor(Math.random()*nodes.length);
+      var b=Math.floor(Math.random()*nodes.length);
+      var k=Math.min(a,b)+'_'+Math.max(a,b);
+      if(a!==b&&nodes[a].p!==nodes[b].p&&!set.has(k)){
+        set.add(k);edges.push({a:a,b:b,ph:Math.random()*Math.PI*2});
+      }
+      tries++;
+    }
+  }
+
+  function draw(){
+    if(!visible)return;
+    raf=requestAnimationFrame(draw);
+    var W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H);
+    /* edges */
+    edges.forEach(function(e){
+      e.ph+=.007;
+      var na=nodes[e.a],nb=nodes[e.b];
+      var op=(0.25+0.15*Math.sin(e.ph));
+      var g=ctx.createLinearGradient(na.x,na.y,nb.x,nb.y);
+      g.addColorStop(0,PC[na.p]);g.addColorStop(1,PC[nb.p]);
+      ctx.beginPath();ctx.moveTo(na.x,na.y);ctx.lineTo(nb.x,nb.y);
+      ctx.strokeStyle=g;ctx.globalAlpha=op;ctx.lineWidth=.6;ctx.stroke();
+      ctx.globalAlpha=1;
+    });
+    /* nodes */
+    nodes.forEach(function(n){
+      n.ph+=.012;
+      n.x+=n.vx;n.y+=n.vy;
+      n.vx+=(Math.random()-.5)*.015;n.vy+=(Math.random()-.5)*.015;
+      n.vx=Math.max(-.24,Math.min(.24,n.vx));n.vy=Math.max(-.24,Math.min(.24,n.vy));
+      if(n.x<6){n.x=6;n.vx=Math.abs(n.vx);}
+      if(n.x>W-6){n.x=W-6;n.vx=-Math.abs(n.vx);}
+      if(n.y<6){n.y=6;n.vy=Math.abs(n.vy);}
+      if(n.y>H-62){n.y=H-62;n.vy=-Math.abs(n.vy);}
+      var op=.7+.3*Math.sin(n.ph);
+      /* glow */
+      var gr=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5);
+      gr.addColorStop(0,PG[n.p]+'.3)');gr.addColorStop(1,PG[n.p]+'0)');
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r*5,0,Math.PI*2);
+      ctx.fillStyle=gr;ctx.globalAlpha=op*.6;ctx.fill();ctx.globalAlpha=1;
+      /* dot */
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle=PC[n.p];ctx.globalAlpha=op;ctx.fill();ctx.globalAlpha=1;
+      /* label */
+      ctx.font='7px DM Mono,monospace';
+      ctx.fillStyle=PC[n.p];ctx.globalAlpha=op*.7;
+      ctx.fillText(n.l,n.x+n.r+3,n.y+3);ctx.globalAlpha=1;
+    });
+    /* caption */
+    ctx.font='8px DM Mono,monospace';ctx.fillStyle='#6a6560';ctx.globalAlpha=.8;
+    ctx.textAlign='right';ctx.fillText('LIVE · CROSS-PILLAR MAP',W-12,16);ctx.textAlign='left';
+    /* legend */
+    var lx=12,ly=H-22,pn=['Clinical','Sleep','Nutrition','Movement','Genome'];
+    pn.forEach(function(name,i){
+      ctx.beginPath();ctx.arc(lx,ly,3,0,Math.PI*2);
+      ctx.fillStyle=PC[i];ctx.globalAlpha=.9;ctx.fill();
+      ctx.font='7px DM Mono,monospace';ctx.fillStyle=PC[i];ctx.globalAlpha=.65;
+      ctx.fillText(name,lx+8,ly+3);ctx.globalAlpha=1;
+      lx+=name.length*5+22;
+    });
+  }
+
+  var io=new IntersectionObserver(function(e){
+    e.forEach(function(entry){
+      visible=entry.isIntersecting;
+      if(visible&&!raf)raf=requestAnimationFrame(draw);
+      if(!visible&&raf){cancelAnimationFrame(raf);raf=null;}
+    });
+  });
+  io.observe(canvas);
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(init,150);});
+  init();
+})();
+</script>
+
+<script>
+/* Particle ring canvas */
+(function(){
+  var canvas=document.getElementById('particleRing');
+  if(!canvas)return;
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  var ctx=canvas.getContext('2d');
+  var raf=null,visible=false,particles=[];
+
+  function init(){
+    canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;
+    var W=canvas.width,H=canvas.height;
+    var R=Math.min(W,H)*.42;
+    particles=[];
+    for(var i=0;i<800;i++){
+      var variance=R*.22;
+      var r=R+( Math.random()*2-1)*variance;
+      particles.push({
+        angle:Math.random()*Math.PI*2,
+        radius:r,
+        speed:(Math.random()>.5?1:-1)*(0.0003+Math.random()*.0008),
+        size:.4+Math.random()*2.2,
+        baseOp:.2+Math.random()*.8,
+        ph:Math.random()*Math.PI*2,
+        color:Math.random()<.85?'#39ff6e':'#a7f3c4'
+      });
+    }
+  }
+
+  function draw(){
+    if(!visible)return;
+    raf=requestAnimationFrame(draw);
+    var W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H);
+    var cx=W/2,cy=H/2;
+    particles.forEach(function(p){
+      p.angle+=p.speed;p.ph+=.04;
+      var x=cx+Math.cos(p.angle)*p.radius;
+      var y=cy+Math.sin(p.angle)*p.radius;
+      var op=p.baseOp*(.7+.3*Math.sin(p.ph));
+      ctx.beginPath();ctx.arc(x,y,p.size,0,Math.PI*2);
+      ctx.fillStyle=p.color;ctx.globalAlpha=op;ctx.fill();ctx.globalAlpha=1;
+    });
+  }
+
+  var io=new IntersectionObserver(function(e){
+    e.forEach(function(entry){
+      visible=entry.isIntersecting;
+      if(visible&&!raf)raf=requestAnimationFrame(draw);
+      if(!visible&&raf){cancelAnimationFrame(raf);raf=null;}
+    });
+  });
+  io.observe(canvas);
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(init,150);});
+  init();
+})();
+</script>
+
+<!-- ══ LEAD FORM MODAL ══ -->
+<style>
+#lead-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(9,9,11,0.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+#lead-modal.open{display:flex}
+.lm-card{width:100%;max-width:460px;background:var(--ink2);border:1px solid rgba(57,255,110,0.18);border-radius:12px;padding:44px 40px 40px;position:relative;box-shadow:0 0 60px rgba(57,255,110,0.07),0 24px 64px rgba(0,0,0,0.6);animation:lm-in .35s var(--ease) both}
+@keyframes lm-in{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.lm-close{position:absolute;top:16px;right:18px;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:18px;line-height:1;transition:color .2s;padding:4px}
+.lm-close:hover{color:var(--tx)}
+.lm-kicker{font-family:var(--fm);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gr);display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.lm-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gr);box-shadow:0 0 6px rgba(57,255,110,.7);animation:blink 2s infinite}
+.lm-h{font-family:var(--fd);font-size:28px;font-weight:400;color:var(--tx);line-height:1.1;margin-bottom:8px}
+.lm-h em{font-style:italic;color:var(--gr)}
+.lm-sub{font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:32px}
+.lm-field{margin-bottom:16px}
+.lm-label{display:block;font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:8px}
+.lm-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:13px 16px;font-family:var(--fs);font-size:14px;color:var(--tx);outline:none;transition:border-color .2s,box-shadow .2s}
+.lm-input::placeholder{color:var(--tx3)}
+.lm-input:focus{border-color:rgba(57,255,110,0.5);box-shadow:0 0 0 3px rgba(57,255,110,0.07)}
+.lm-submit{width:100%;margin-top:8px;font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#000;background:var(--gr);border:none;border-radius:2px;padding:15px 28px;cursor:pointer;transition:opacity .2s,transform .3s var(--ease)}
+.lm-submit:hover:not(:disabled){opacity:.88;transform:translateY(-2px)}
+.lm-submit:disabled{opacity:.5;cursor:not-allowed}
+.lm-error{margin-top:12px;font-size:12px;color:var(--rd);font-family:var(--fm);letter-spacing:.04em;display:none}
+.lm-success{text-align:center;padding:24px 0 8px;display:none}
+.lm-success-icon{font-size:36px;margin-bottom:12px}
+.lm-success-h{font-family:var(--fd);font-size:22px;color:var(--tx);line-height:1.2;margin-bottom:8px}
+.lm-success-h em{font-style:italic;color:var(--gr)}
+.lm-success-sub{font-size:13px;color:var(--tx2);line-height:1.65}
+.lm-fine{font-family:var(--fm);font-size:8px;letter-spacing:.06em;color:var(--tx3);text-align:center;margin-top:18px;line-height:1.6}
+</style>
+
+<div id="lead-modal" role="dialog" aria-modal="true" aria-label="Get early access">
+  <div class="lm-card">
+    <button class="lm-close" onclick="closeLeadModal()" aria-label="Close">✕</button>
+    <div id="lm-form-view">
+      <div class="lm-kicker">Early Access</div>
+      <h2 class="lm-h">Get <em>early</em><br>access</h2>
+      <p class="lm-sub">Join the waitlist and be among the first to experience your personal health&nbsp;OS.</p>
+      <form id="lead-form" onsubmit="submitLeadForm(event)">
+        <div class="lm-field">
+          <label class="lm-label" for="lm-name">Your name</label>
+          <input class="lm-input" id="lm-name" type="text" name="name" placeholder="Alex Ivanova" autocomplete="name" required>
+        </div>
+        <div class="lm-field">
+          <label class="lm-label" for="lm-email">Email address</label>
+          <input class="lm-input" id="lm-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="lm-error" id="lm-error"></div>
+        <button class="lm-submit" id="lm-submit-btn" type="submit">Get early access →</button>
+      </form>
+      <p class="lm-fine">No spam. No credit card. Unsubscribe anytime.</p>
+    </div>
+    <div id="lm-success-view" class="lm-success">
+      <div class="lm-success-icon" aria-hidden="true">🌿</div>
+      <h2 class="lm-success-h">You're on the<br><em>list</em></h2>
+      <p class="lm-success-sub">We'll reach out as soon as your spot is ready.<br>Talk soon.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openLeadModal(){
+  document.getElementById('lead-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(function(){document.getElementById('lm-name').focus();},80);
+}
+function closeLeadModal(){
+  document.getElementById('lead-modal').classList.remove('open');
+  document.body.style.overflow='';
+  var form=document.getElementById('lead-form');
+  if(form)form.reset();
+  document.getElementById('lm-error').style.display='none';
+  document.getElementById('lm-form-view').style.display='';
+  document.getElementById('lm-success-view').style.display='none';
+  var btn=document.getElementById('lm-submit-btn');
+  if(btn){btn.disabled=false;btn.textContent='Get early access →';}
+}
+document.getElementById('lead-modal').addEventListener('click',function(e){
+  if(e.target===this)closeLeadModal();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeLeadModal();
+});
+async function submitLeadForm(e){
+  e.preventDefault();
+  var name=document.getElementById('lm-name').value.trim();
+  var email=document.getElementById('lm-email').value.trim();
+  var btn=document.getElementById('lm-submit-btn');
+  var errEl=document.getElementById('lm-error');
+  errEl.style.display='none';
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    var res=await fetch('/api/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email})});
+    if(res.ok){
+      document.getElementById('lm-form-view').style.display='none';
+      document.getElementById('lm-success-view').style.display='block';
+      setTimeout(closeLeadModal,4000);
+    }else{
+      var data=await res.json().catch(function(){return{};});
+      showLmError(data.error||'Something went wrong — please try again.');
+      btn.disabled=false;btn.textContent='Get early access →';
+    }
+  }catch(err){
+    showLmError('Network error — please check your connection and try again.');
+    btn.disabled=false;btn.textContent='Get early access →';
+  }
+}
+function showLmError(msg){
+  var el=document.getElementById('lm-error');
+  el.textContent=msg;el.style.display='block';
+}
+</script>
+
+</body>
+</html>
