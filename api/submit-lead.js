@@ -1,10 +1,10 @@
+// api/submit-lead.js  (v1.1 — GitHub Issues backend)
 // POST /api/submit-lead  { name: string, email: string }
-// → 200 { success: true }  on success
-// → 400 { error: string }  on bad input
-// → 500 { error: string }  on server/Notion failure
-// → 502 { error: string }  if Notion responds non-2xx
+// → 200 { success: true }
+// → 400 { error: string }  bad input
+// → 500 { error: string }  config/server failure
+// → 502 { error: string }  GitHub API non-2xx
 
-const NOTION_DATABASE_ID = '30b8036c7c8a4f1fa8745efef50d7773';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req, res) {
@@ -22,32 +22,46 @@ export default async function handler(req, res) {
   if (!email || typeof email !== 'string' || !EMAIL_RE.test(email.trim()))
     return res.status(400).json({ error: 'Valid email is required' });
 
-  const token = process.env.NOTION_TOKEN;
-  if (!token) {
-    console.error('[submit-lead] NOTION_TOKEN env var not set');
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_ISSUES_REPO;
+
+  if (!token || !repo) {
+    console.error('[submit-lead] GITHUB_TOKEN or GITHUB_ISSUES_REPO env var not set');
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
+  const cleanName = name.trim();
+  const cleanEmail = email.trim().toLowerCase();
+
+  const issueBody = [
+    `## Lead submission`,
+    ``,
+    `| Field | Value |`,
+    `|---|---|`,
+    `| **Name** | ${cleanName} |`,
+    `| **Email** | ${cleanEmail} |`,
+    `| **Submitted at** | ${new Date().toISOString()} |`,
+  ].join('\n');
+
   try {
-    const r = await fetch('https://api.notion.com/v1/pages', {
+    const r = await fetch(`https://api.github.com/repos/${repo}/issues`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
         'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28',
+        'X-GitHub-Api-Version': '2022-11-28',
       },
       body: JSON.stringify({
-        parent: { database_id: NOTION_DATABASE_ID },
-        properties: {
-          Name: { title: [{ text: { content: name.trim() } }] },
-          Email: { email: email.trim().toLowerCase() },
-        },
+        title: `Lead: ${cleanName} <${cleanEmail}>`,
+        body: issueBody,
+        labels: ['lead'],
       }),
     });
 
     if (!r.ok) {
       const body = await r.text();
-      console.error('[submit-lead] Notion error', r.status, body);
+      console.error('[submit-lead] GitHub error', r.status, body);
       return res.status(502).json({ error: 'Failed to save — please try again' });
     }
 
