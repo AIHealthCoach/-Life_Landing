@@ -25,7 +25,7 @@
 
 /* ── RESET ───────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
 body{font-family:var(--fs);background:var(--ink);color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 button{font-family:inherit}
@@ -332,11 +332,11 @@ nav{
   .section.compact{padding:48px 20px}
 
   /* nav */
-  nav{padding:14px 20px}
-  .nav-links{gap:14px}
-  .nav-links .nav-link{display:none}
+  nav{padding:12px 16px;flex-wrap:wrap;gap:8px 12px}
+  .nav-links{gap:10px;flex-wrap:wrap}
+  .nav-link{font-size:9px;letter-spacing:.08em}
+  .nav-cta{padding:7px 14px;font-size:9px;letter-spacing:.08em}
   .logo-word{font-size:16px}
-  .nav-cta{padding:8px 16px;font-size:9px}
 
   /* grids → single column */
   .g2,.g2.flip,.g4,.g3,.g2-sm,.feat-row,.feat-row.flip{grid-template-columns:1fr;gap:32px;direction:ltr}
@@ -439,9 +439,9 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
     <span class="logo-word">Life</span>
   </a>
   <div class="nav-links">
-    <a href="#" class="nav-link">Platform</a>
-    <a href="#" class="nav-link">Data sources</a>
-    <a href="#" class="nav-link">Pricing</a>
+    <a href="#why-fails" class="nav-link">Platform</a>
+    <a href="#pillars" class="nav-link">Data sources</a>
+    <a href="#coaching" class="nav-link">AI Coach</a>
     <a href="#" class="nav-cta" onclick="openLeadModal();return false;">Get early access</a>
   </div>
 </nav>
@@ -457,7 +457,6 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
       <p class="lead sr d2" style="margin-top:24px">One intelligent OS that reads your labs, wearables, genes, and history — then reasons across all of it to give you insight no single app ever could.</p>
       <div class="btn-row sr d3">
         <a href="#" class="btn-p" onclick="openLeadModal();return false;">Start for free →</a>
-        <a href="#" class="btn-ghost">Watch demo</a>
       </div>
     </div>
     <div class="sr d2 right">
@@ -570,7 +569,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
 </div>
 
 <!-- ══ 4. THE PROBLEM ══ -->
-<section class="section light">
+<section id="why-fails" class="section light">
   <div class="wrap">
     <div class="kicker sr">Why everything else fails</div>
     <h2 class="h2 sr d1">Dozens of tools. They all failed<br>the <em>same</em> way.</h2>
@@ -623,7 +622,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
 </section>
 
 <!-- ══ 5. FIVE PILLARS ══ -->
-<section class="section dark">
+<section id="pillars" class="section dark">
   <div class="wrap">
     <div class="kicker sr">The five pillars</div>
     <h2 class="h2 sr d1">One OS. Five streams of <em>truth</em><br>about your body.</h2>
@@ -1088,7 +1087,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
 </section>
 
 <!-- ══ 14. COACHING ══ -->
-<section class="section dark">
+<section id="coaching" class="section dark">
   <div class="wrap g2 mid">
     <div>
       <div class="kicker sr">Health coaching</div>
@@ -1166,17 +1165,16 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
     <p class="lead sr d2" style="margin:20px auto 0;text-align:center">Join the waitlist. Be among the first to experience<br>a health OS built around your actual biology.</p>
     <div class="btn-row sr d3" style="justify-content:center">
       <a href="#" class="cta-p" onclick="openLeadModal();return false;">Get early access →</a>
-      <a href="#" class="btn-ghost">Watch demo</a>
     </div>
     <div class="store-row sr d4">
-      <div class="store-badge" role="button" tabindex="0" aria-label="Download on App Store (coming soon)">
+      <div class="store-badge" role="button" tabindex="0" aria-label="Download on App Store (coming soon)" onclick="openComingSoon()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openComingSoon();}">
         <span class="store-ico" aria-hidden="true">🍎</span>
         <div>
           <div class="store-lbl">Download on the</div>
           <div class="store-name">App Store</div>
         </div>
       </div>
-      <div class="store-badge" role="button" tabindex="0" aria-label="Get it on Google Play (coming soon)">
+      <div class="store-badge" role="button" tabindex="0" aria-label="Get it on Google Play (coming soon)" onclick="openComingSoon()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openComingSoon();}">
         <span class="store-ico" aria-hidden="true">▶</span>
         <div>
           <div class="store-lbl">Get it on</div>
@@ -1402,8 +1400,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
 
 <!-- ══ LEAD FORM MODAL ══ -->
 <style>
-#lead-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(9,9,11,0.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-#lead-modal.open{display:flex}
+#lead-modal,#cs-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(9,9,11,0.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+#lead-modal.open,#cs-modal.open{display:flex}
 .lm-card{width:100%;max-width:460px;background:var(--ink2);border:1px solid rgba(57,255,110,0.18);border-radius:12px;padding:44px 40px 40px;position:relative;box-shadow:0 0 60px rgba(57,255,110,0.07),0 24px 64px rgba(0,0,0,0.6);animation:lm-in .35s var(--ease) both}
 @keyframes lm-in{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
 .lm-close{position:absolute;top:16px;right:18px;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:18px;line-height:1;transition:color .2s;padding:4px}
@@ -1459,6 +1457,16 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);padding
   </div>
 </div>
 
+<div id="cs-modal" role="dialog" aria-modal="true" aria-label="Coming soon">
+  <div class="lm-card">
+    <button class="lm-close" onclick="closeComingSoon()" aria-label="Close">✕</button>
+    <div class="lm-kicker">Mobile apps</div>
+    <h2 class="lm-h"><em>Coming</em><br>soon</h2>
+    <p class="lm-sub">Our iOS and Android apps are on the way. Join the waitlist to get notified the moment they launch.</p>
+    <button class="lm-submit" type="button" onclick="closeComingSoon()">Got it</button>
+  </div>
+</div>
+
 <script>
 function openLeadModal(){
   document.getElementById('lead-modal').classList.add('open');
@@ -1510,6 +1518,21 @@ function showLmError(msg){
   var el=document.getElementById('lm-error');
   el.textContent=msg;el.style.display='block';
 }
+
+function openComingSoon(){
+  document.getElementById('cs-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeComingSoon(){
+  document.getElementById('cs-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('cs-modal').addEventListener('click',function(e){
+  if(e.target===this)closeComingSoon();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&document.getElementById('cs-modal').classList.contains('open'))closeComingSoon();
+});
 </script>
 
 </body>
