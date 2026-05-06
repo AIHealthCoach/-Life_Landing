@@ -1492,27 +1492,12 @@ document.addEventListener('keydown',function(e){
 });
 async function submitLeadForm(e){
   e.preventDefault();
-  var name=document.getElementById('lm-name').value.trim();
-  var email=document.getElementById('lm-email').value.trim();
   var btn=document.getElementById('lm-submit-btn');
-  var errEl=document.getElementById('lm-error');
-  errEl.style.display='none';
   btn.disabled=true;btn.textContent='Sending…';
-  try{
-    var res=await fetch('/api/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email})});
-    if(res.ok){
-      document.getElementById('lm-form-view').style.display='none';
-      document.getElementById('lm-success-view').style.display='block';
-      setTimeout(closeLeadModal,4000);
-    }else{
-      var data=await res.json().catch(function(){return{};});
-      showLmError(data.error||'Something went wrong — please try again.');
-      btn.disabled=false;btn.textContent='Get early access →';
-    }
-  }catch(err){
-    showLmError('Network error — please check your connection and try again.');
-    btn.disabled=false;btn.textContent='Get early access →';
-  }
+  await new Promise(function(r){setTimeout(r,800);});
+  document.getElementById('lm-form-view').style.display='none';
+  document.getElementById('lm-success-view').style.display='block';
+  setTimeout(closeLeadModal,4000);
 }
 function showLmError(msg){
   var el=document.getElementById('lm-error');
